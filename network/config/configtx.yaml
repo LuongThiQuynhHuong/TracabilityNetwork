@@ -11,11 +11,7 @@ Organizations:
   - &FarmOrdererOrg
     Name: FarmOrdererOrg
     ID: FarmOrdererMSP
-    MSPDir: ./channel-msp/ordererOrganizations/farm.com/msp
-
-    # Policies defines the set of policies at this level of the config tree
-    # For organization policies, their canonical path is usually
-    #   /Channel/<Application|Orderer>/<OrgName>/<PolicyName>
+    MSPDir: ../organizations/ordererOrganizations/farm.com/msp
     Policies:
       Readers:
         Type: Signature
@@ -26,18 +22,13 @@ Organizations:
       Admins:
         Type: Signature
         Rule: "OR('FarmOrdererMSP.admin')"
-
     OrdererEndpoints:
-      - farm-orderer.farm.com:6050
-      # - org0-orderer1.${ORG0_NS}.svc.cluster.local:6050
-      # - org0-orderer2.${ORG0_NS}.svc.cluster.local:6050
-      # - org0-orderer3.${ORG0_NS}.svc.cluster.local:6050
+      - orderer.farm.com:6050
       
   - &ProcessorOrdererOrg
     Name: ProcessorOrdererOrg
     ID: ProcessorOrdererMSP
-    MSPDir: ./channel-msp/ordererOrganizations/processor.com/msp
-
+    MSPDir: ../organizations/ordererOrganizations/processor.com/msp
     Policies:
       Readers:
         Type: Signature
@@ -48,15 +39,13 @@ Organizations:
       Admins:
         Type: Signature
         Rule: "OR('ProcessorOrdererMSP.admin')"
-
     OrdererEndpoints:
-      - processor-orderer.processor.com:6050
+      - orderer.processor.com:6050
       
   - &RegulatoryDepartmentOrdererOrg
     Name: RegulatoryDepartmentOrdererOrg
     ID: RegulatoryDepartmentOrdererMSP
-    MSPDir: ./channel-msp/ordererOrganizations/regulatoryDepartment.com/msp
-
+    MSPDir: ../organizations/ordererOrganizations/regulatoryDepartment.com/msp
     Policies:
       Readers:
         Type: Signature
@@ -67,23 +56,13 @@ Organizations:
       Admins:
         Type: Signature
         Rule: "OR('RegulatoryDepartmentOrdererMSP.admin')"
-
     OrdererEndpoints:
-      - regulatory-department-orderer.regulatoryDepartment.com:6050
+      - orderer.regulatoryDepartment.com:6050
 
   - &RegulatoryDepartment
-    # DefaultOrg defines the organization which is used in the sampleconfig
-    # of the fabric.git development environment
     Name: RegulatoryDepartmentMSP
-
-    # ID to load the MSP definition as
     ID: RegulatoryDepartmentMSP
-
-    MSPDir: ./channel-msp/peerOrganizations/regulatoryDepartment.com/msp
-
-    # Policies defines the set of policies at this level of the config tree
-    # For organization policies, their canonical path is usually
-    #   /Channel/<Application|Orderer>/<OrgName>/<PolicyName>
+    MSPDir: ../organizations/peerOrganizations/regulatoryDepartment.com/msp
     Policies:
       Readers:
         Type: Signature
@@ -97,20 +76,14 @@ Organizations:
       Endorsement:
         Type: Signature
         Rule: "OR('RegulatoryDepartmentMSP.peer')"
-
-    # leave this flag set to true.
     AnchorPeers:
-      # AnchorPeers defines the location of peers which can be used
-      # for cross org gossip communication.  Note, this value is only
-      # encoded in the genesis block in the Application section context
       - Host: peer1.regulatoryDepartment.com
         Port: 7051
 
   - &Farm
     Name: FarmMSP
     ID: FarmMSP
-    MSPDir: ./channel-msp/peerOrganizations/farm.com/msp
-
+    MSPDir: ../organizations/peerOrganizations/farm.com/msp
     Policies:
       Readers:
         Type: Signature
@@ -124,7 +97,6 @@ Organizations:
       Endorsement:
         Type: Signature
         Rule: "OR('FarmMSP.peer')"
-
     AnchorPeers:
       - Host: peer1.farm.com
         Port: 8051
@@ -132,8 +104,7 @@ Organizations:
   - &Processor
     Name: ProcessorMSP
     ID: ProcessorMSP
-    MSPDir: ./channel-msp/peerOrganizations/processor.com/msp
-
+    MSPDir: ../organizations/peerOrganizations/processor.com/msp
     Policies:
       Readers:
         Type: Signature
@@ -147,7 +118,6 @@ Organizations:
       Endorsement:
         Type: Signature
         Rule: "OR('ProcessorMSP.peer')"
-
     AnchorPeers:
       - Host: peer1.processor.com
         Port: 9051
@@ -155,8 +125,7 @@ Organizations:
   - &Distributor
     Name: DistributorMSP
     ID: DistributorMSP
-    MSPDir: ./channel-msp/peerOrganizations/distributor.com/msp
-
+    MSPDir: ../organizations/peerOrganizations/distributor.com/msp
     Policies:
       Readers:
         Type: Signature
@@ -170,7 +139,6 @@ Organizations:
       Endorsement:
         Type: Signature
         Rule: "OR('DistributorMSP.peer')"
-
     AnchorPeers:
       - Host: peer1.distributor.com
         Port: 10051
@@ -178,8 +146,7 @@ Organizations:
   - &Retailer
     Name: RetailerMSP
     ID: RetailerMSP
-    MSPDir: ./channel-msp/peerOrganizations/retailer.com/msp
-
+    MSPDir: ../organizations/peerOrganizations/retailer.com/msp
     Policies:
       Readers:
         Type: Signature
@@ -193,7 +160,6 @@ Organizations:
       Endorsement:
         Type: Signature
         Rule: "OR('RetailerMSP.peer')"
-
     AnchorPeers:
       - Host: peer1.retailer.com
         Port: 11051
@@ -218,40 +184,11 @@ Organizations:
 #
 ################################################################################
 Capabilities:
-  # Channel capabilities apply to both the orderers and the peers and must be
-  # supported by both.
-  # Set the value of the capability to true to require it.
   Channel: &ChannelCapabilities
-    # V2_0 capability ensures that orderers and peers behave according
-    # to v2.0 channel capabilities. Orderers and peers from
-    # prior releases would behave in an incompatible way, and are therefore
-    # not able to participate in channels at v2.0 capability.
-    # Prior to enabling V2.0 channel capabilities, ensure that all
-    # orderers and peers on a channel are at v2.0.0 or later.
     V2_0: true
-
-  # Orderer capabilities apply only to the orderers, and may be safely
-  # used with prior release peers.
-  # Set the value of the capability to true to require it.
   Orderer: &OrdererCapabilities
-    # V2_0 orderer capability ensures that orderers behave according
-    # to v2.0 orderer capabilities. Orderers from
-    # prior releases would behave in an incompatible way, and are therefore
-    # not able to participate in channels at v2.0 orderer capability.
-    # Prior to enabling V2.0 orderer capabilities, ensure that all
-    # orderers on channel are at v2.0.0 or later.
     V2_0: true
-
-  # Application capabilities apply only to the peer network, and may be safely
-  # used with prior release orderers.
-  # Set the value of the capability to true to require it.
   Application: &ApplicationCapabilities
-    # V2_0 application capability ensures that peers behave according
-    # to v2.0 application capabilities. Peers from
-    # prior releases would behave in an incompatible way, and are therefore
-    # not able to participate in channels at v2.0 application capability.
-    # Prior to enabling V2.0 application capabilities, ensure that all
-    # peers on channel are at v2.0.0 or later.
     V2_5: true
 
 ################################################################################
@@ -263,14 +200,7 @@ Capabilities:
 #
 ################################################################################
 Application: &ApplicationDefaults
-
-  # Organizations is the list of orgs which are defined as participants on
-  # the application side of the network
   Organizations:
-
-  # Policies defines the set of policies at this level of the config tree
-  # For Application policies, their canonical path is
-  #   /Channel/Application/<PolicyName>
   Policies:
     Readers:
       Type: ImplicitMeta
@@ -282,12 +212,11 @@ Application: &ApplicationDefaults
       Type: ImplicitMeta
       Rule: "MAJORITY Admins"
     LifecycleEndorsement:
-      Type: Signature
-      Rule: "OR('RegulatoryDepartmentMSP.peer','FarmMSP.peer','ProcessorMSP.peer','DistributorMSP.peer','RetailerMSP.peer')"
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
     Endorsement:
-      Type: Signature
-      Rule: "OR('RegulatoryDepartmentMSP.peer','FarmMSP.peer','ProcessorMSP.peer','DistributorMSP.peer','RetailerMSP.peer')"
-
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
   Capabilities:
     <<: *ApplicationCapabilities
 ################################################################################
@@ -299,91 +228,33 @@ Application: &ApplicationDefaults
 #
 ################################################################################
 Orderer: &OrdererDefaults
-
-  # Orderer Type: The orderer implementation to start
   OrdererType: etcdraft
-
   EtcdRaft:
     Consenters:
-      # - Host: org0-orderer1
-      #   Port: 6050
-      #   ClientTLSCert: ./channel-msp/ordererOrganizations/org0/orderers/org0-orderer1/tls/signcerts/tls-cert.pem
-      #   ServerTLSCert: ./channel-msp/ordererOrganizations/org0/orderers/org0-orderer1/tls/signcerts/tls-cert.pem
-      # - Host: org0-orderer2
-      #   Port: 6050
-      #   ClientTLSCert: ./channel-msp/ordererOrganizations/org0/orderers/org0-orderer2/tls/signcerts/tls-cert.pem
-      #   ServerTLSCert: ./channel-msp/ordererOrganizations/org0/orderers/org0-orderer2/tls/signcerts/tls-cert.pem
-      # - Host: org0-orderer3
-      #   Port: 6050
-      #   ClientTLSCert: ./channel-msp/ordererOrganizations/org0/orderers/org0-orderer3/tls/signcerts/tls-cert.pem
-      #   ServerTLSCert: ./channel-msp/ordererOrganizations/org0/orderers/org0-orderer3/tls/signcerts/tls-cert.pem
-      - Host: farm-orderer
+      - Host: orderer.farm.com
         Port: 6050
-        ClientTLSCert: ./channel-msp/ordererOrganizations/farm/orderers/farm-orderer/tls/signcerts/tls-cert.pem
-        ServerTLSCert: ./channel-msp/ordererOrganizations/farm/orderers/farm-orderer/tls/signcerts/tls-cert.pem
-      - Host: processor-orderer
+        ClientTLSCert: ../organizations/ordererOrganizations/farm.com/orderers/orderer.farm.com/tls/server.crt
+        ServerTLSCert: ../organizations/ordererOrganizations/farm.com/orderers/orderer.farm.com/tls/server.crt
+      - Host: orderer.processor.com
         Port: 6050
-        ClientTLSCert: ./channel-msp/ordererOrganizations/processor/orderers/processor-orderer/tls/signcerts/tls-cert.pem
-        ServerTLSCert: ./channel-msp/ordererOrganizations/processor/orderers/processor-orderer/tls/signcerts/tls-cert.pem
-      - Host: regulatory-department-orderer
+        ClientTLSCert: ../organizations/ordererOrganizations/processor.com/orderers/orderer.processor.com/tls/server.crt
+        ServerTLSCert: ../organizations/ordererOrganizations/processor.com/orderers/orderer.processor.com/tls/tls/server.crt
+      - Host: orderer.regulatoryDepartment.com
         Port: 6050
-        ClientTLSCert: ./channel-msp/ordererOrganizations/regulatoryDepartment/orderers/regulatory-department-orderer/tls/signcerts/tls-cert.pem
-        ServerTLSCert: ./channel-msp/ordererOrganizations/regulatoryDepartment/orderers/regulatory-department-orderer/tls/signcerts/tls-cert.pem
-
-
-    # Options to be specified for all the etcd/raft nodes. The values here
-    # are the defaults for all new channels and can be modified on a
-    # per-channel basis via configuration updates.
+        ClientTLSCert: ../organizations/ordererOrganizations/regulatoryDepartment.com/orderers/orderer.regulatoryDepartment.com/tls/server.crt
+        ServerTLSCert: ../organizations/ordererOrganizations/regulatoryDepartment.com/orderers/orderer.regulatoryDepartment.com/tls/server.crt
     Options:
-      # TickInterval is the time interval between two Node.Tick invocations.
-      #TickInterval: 500ms default
       TickInterval: 2500ms
-
-      # ElectionTick is the number of Node.Tick invocations that must pass
-      # between elections. That is, if a follower does not receive any
-      # message from the leader of current term before ElectionTick has
-      # elapsed, it will become candidate and start an election.
-      # ElectionTick must be greater than HeartbeatTick.
-      # ElectionTick: 10 default
       ElectionTick: 5
-
-      # HeartbeatTick is the number of Node.Tick invocations that must
-      # pass between heartbeats. That is, a leader sends heartbeat
-      # messages to maintain its leadership every HeartbeatTick ticks.
       HeartbeatTick: 1
-
-      # MaxInflightBlocks limits the max number of in-flight append messages
-      # during optimistic replication phase.
       MaxInflightBlocks: 5
-
-      # SnapshotIntervalSize defines number of bytes per which a snapshot is taken
       SnapshotIntervalSize: 16 MB
-
-  # Batch Timeout: The amount of time to wait before creating a batch
   BatchTimeout: 2s
-
-  # Batch Size: Controls the number of messages batched into a block
   BatchSize:
-
-    # Max Message Count: The maximum number of messages to permit in a batch
     MaxMessageCount: 10
-
-    # Absolute Max Bytes: The absolute maximum number of bytes allowed for
-    # the serialized messages in a batch.
     AbsoluteMaxBytes: 99 MB
-
-    # Preferred Max Bytes: The preferred maximum number of bytes allowed for
-    # the serialized messages in a batch. A message larger than the preferred
-    # max bytes will result in a batch larger than preferred max bytes.
     PreferredMaxBytes: 512 KB
-
-  # Organizations is the list of orgs which are defined as participants on
-  # the orderer side of the network
   Organizations:
-
-  # Policies defines the set of policies at this level of the config tree
-  # For Orderer policies, their canonical path is
-  #   /Channel/Orderer/<PolicyName>
   Policies:
     Readers:
       Type: ImplicitMeta
@@ -394,8 +265,6 @@ Orderer: &OrdererDefaults
     Admins:
       Type: ImplicitMeta
       Rule: "MAJORITY Admins"
-    # BlockValidation specifies what signatures must be included in the block
-    # from the orderer for the peer to validate it.
     BlockValidation:
       Type: ImplicitMeta
       Rule: "ANY Writers"
@@ -409,26 +278,16 @@ Orderer: &OrdererDefaults
 #
 ################################################################################
 Channel: &ChannelDefaults
-  # Policies defines the set of policies at this level of the config tree
-  # For Channel policies, their canonical path is
-  #   /Channel/<PolicyName>
   Policies:
-    # Who may invoke the 'Deliver' API
     Readers:
       Type: ImplicitMeta
       Rule: "ANY Readers"
-    # Who may invoke the 'Broadcast' API
     Writers:
       Type: ImplicitMeta
       Rule: "ANY Writers"
-    # By default, who may modify elements at this config level
     Admins:
       Type: ImplicitMeta
       Rule: "MAJORITY Admins"
-
-  # Capabilities describes the channel level capabilities, see the
-  # dedicated Capabilities section elsewhere in this file for a full
-  # description
   Capabilities:
     <<: *ChannelCapabilities
 
@@ -441,33 +300,6 @@ Channel: &ChannelDefaults
 #
 ################################################################################
 Profiles:
-
-  # test network profile with application (not system) channel.
-  # TraceabilityApplicationGenesis:
-  #   <<: *ChannelDefaults
-  #   Orderer:
-  #     <<: *OrdererDefaults
-  #     Organizations:
-  #       - *RegulatoryDepartmentOrdererOrg
-  #       - *FarmOrdererOrg
-  #       - *ProcessorOrdererOrg
-  #     Capabilities: *OrdererCapabilities
-  #   Application:
-  #     <<: *ApplicationDefaults
-  #     Organizations:
-  #       - *Org1
-  #       - *Org2
-  #     Capabilities: *ApplicationCapabilities
-
-
-  #
-  # Unclear lineage for these profiles:  nano-fab?
-  #
-  # RaftTraceabilityApplicationGenesis will construct a system channel as it has a Consortiums stanza, which is not
-  # compatible with osnadmin.
-  #
-  # @enyeart - which profile should be used for the kube test network?
-  #
   RaftTraceabilityApplicationGenesis:
     <<: *ChannelDefaults
     Orderer:
@@ -501,21 +333,3 @@ Profiles:
         - *Retailer
       Capabilities:
         <<: *ApplicationCapabilities
-  # Org1Channel:
-  #   Consortium: SampleConsortium
-  #   <<: *ChannelDefaults
-  #   Application:
-  #     <<: *ApplicationDefaults
-  #     Organizations:
-  #       - *Org1
-  #     Capabilities:
-  #       <<: *ApplicationCapabilities
-  # Org2Channel:
-  #   Consortium: SampleConsortium
-  #   <<: *ChannelDefaults
-  #   Application:
-  #     <<: *ApplicationDefaults
-  #     Organizations:
-  #       - *Org2
-  #     Capabilities:
-  #       <<: *ApplicationCapabilities
