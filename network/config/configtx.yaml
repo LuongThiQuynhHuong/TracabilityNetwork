@@ -23,7 +23,7 @@ Organizations:
         Type: Signature
         Rule: "OR('FarmOrdererMSP.admin')"
     OrdererEndpoints:
-      - orderer.farm.com:6050
+      - orderer.farm.com:7050
       
   - &ProcessorOrdererOrg
     Name: ProcessorOrdererOrg
@@ -40,7 +40,7 @@ Organizations:
         Type: Signature
         Rule: "OR('ProcessorOrdererMSP.admin')"
     OrdererEndpoints:
-      - orderer.processor.com:6050
+      - orderer.processor.com:7050
       
   - &RegulatoryDepartmentOrdererOrg
     Name: RegulatoryDepartmentOrdererOrg
@@ -57,7 +57,7 @@ Organizations:
         Type: Signature
         Rule: "OR('RegulatoryDepartmentOrdererMSP.admin')"
     OrdererEndpoints:
-      - orderer.regulatoryDepartment.com:6050
+      - orderer.regulatoryDepartment.com:7050
 
   - &RegulatoryDepartment
     Name: RegulatoryDepartmentMSP
@@ -77,7 +77,7 @@ Organizations:
         Type: Signature
         Rule: "OR('RegulatoryDepartmentMSP.peer')"
     AnchorPeers:
-      - Host: peer1.regulatoryDepartment.com
+      - Host: peer0.regulatoryDepartment.com
         Port: 7051
 
   - &Farm
@@ -98,7 +98,7 @@ Organizations:
         Type: Signature
         Rule: "OR('FarmMSP.peer')"
     AnchorPeers:
-      - Host: peer1.farm.com
+      - Host: peer0.farm.com
         Port: 8051
 
   - &Processor
@@ -119,7 +119,7 @@ Organizations:
         Type: Signature
         Rule: "OR('ProcessorMSP.peer')"
     AnchorPeers:
-      - Host: peer1.processor.com
+      - Host: peer0.processor.com
         Port: 9051
 
   - &Distributor
@@ -140,7 +140,7 @@ Organizations:
         Type: Signature
         Rule: "OR('DistributorMSP.peer')"
     AnchorPeers:
-      - Host: peer1.distributor.com
+      - Host: peer0.distributor.com
         Port: 10051
 
   - &Retailer
@@ -161,7 +161,7 @@ Organizations:
         Type: Signature
         Rule: "OR('RetailerMSP.peer')"
     AnchorPeers:
-      - Host: peer1.retailer.com
+      - Host: peer0.retailer.com
         Port: 11051
 
 ################################################################################
@@ -232,15 +232,15 @@ Orderer: &OrdererDefaults
   EtcdRaft:
     Consenters:
       - Host: orderer.farm.com
-        Port: 6050
+        Port: 7050
         ClientTLSCert: ../organizations/ordererOrganizations/farm.com/orderers/orderer.farm.com/tls/server.crt
         ServerTLSCert: ../organizations/ordererOrganizations/farm.com/orderers/orderer.farm.com/tls/server.crt
       - Host: orderer.processor.com
-        Port: 6050
+        Port: 7050
         ClientTLSCert: ../organizations/ordererOrganizations/processor.com/orderers/orderer.processor.com/tls/server.crt
         ServerTLSCert: ../organizations/ordererOrganizations/processor.com/orderers/orderer.processor.com/tls/tls/server.crt
       - Host: orderer.regulatoryDepartment.com
-        Port: 6050
+        Port: 7050
         ClientTLSCert: ../organizations/ordererOrganizations/regulatoryDepartment.com/orderers/orderer.regulatoryDepartment.com/tls/server.crt
         ServerTLSCert: ../organizations/ordererOrganizations/regulatoryDepartment.com/orderers/orderer.regulatoryDepartment.com/tls/server.crt
     Options:
