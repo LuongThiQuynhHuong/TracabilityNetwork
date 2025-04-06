@@ -236,11 +236,11 @@ Orderer: &OrdererDefaults
         ClientTLSCert: ../organizations/ordererOrganizations/farm.com/orderers/orderer.farm.com/tls/server.crt
         ServerTLSCert: ../organizations/ordererOrganizations/farm.com/orderers/orderer.farm.com/tls/server.crt
       - Host: orderer.processor.com
-        Port: 7050
+        Port: 8050
         ClientTLSCert: ../organizations/ordererOrganizations/processor.com/orderers/orderer.processor.com/tls/server.crt
         ServerTLSCert: ../organizations/ordererOrganizations/processor.com/orderers/orderer.processor.com/tls/tls/server.crt
       - Host: orderer.regulatoryDepartment.com
-        Port: 7050
+        Port: 9050
         ClientTLSCert: ../organizations/ordererOrganizations/regulatoryDepartment.com/orderers/orderer.regulatoryDepartment.com/tls/server.crt
         ServerTLSCert: ../organizations/ordererOrganizations/regulatoryDepartment.com/orderers/orderer.regulatoryDepartment.com/tls/server.crt
     Options:
@@ -249,6 +249,10 @@ Orderer: &OrdererDefaults
       HeartbeatTick: 1
       MaxInflightBlocks: 5
       SnapshotIntervalSize: 16 MB
+  Addresses:
+    - orderer.farm.com:7050
+    - orderer.processor.com:8050
+    - orderer.regulatoryDepartment.com:9050
   BatchTimeout: 2s
   BatchSize:
     MaxMessageCount: 10

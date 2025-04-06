@@ -70,7 +70,7 @@ services:
     environment:
       - FABRIC_LOGGING_SPEC=INFO
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
-      - ORDERER_GENERAL_LISTENPORT=7050
+      - ORDERER_GENERAL_LISTENPORT=8050
       - ORDERER_GENERAL_LOCALMSPID=ProcessorOrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       # enabled TLS
@@ -88,8 +88,8 @@ services:
       - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
       - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7053
-      - ORDERER_OPERATIONS_LISTENADDRESS=orderer.processor.com:9443
+      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:8053
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer.processor.com:10443
       - ORDERER_METRICS_PROVIDER=prometheus
     working_dir: /root
     command: orderer
@@ -98,9 +98,9 @@ services:
       - ../organizations/ordererOrganizations/processor.com/orderers/orderer.processor.com/tls/:/var/hyperledger/orderer/tls
       - orderer.processor.com:/var/hyperledger/production/orderer
     ports:
-      - 7050:7050
-      - 7053:7053
-      - 9443:9443
+      - 8050:8050
+      - 8053:8053
+      - 10443:10443
     networks:
       - traceability
 # -------------------------------------------------------------------
@@ -112,7 +112,7 @@ services:
     environment:
       - FABRIC_LOGGING_SPEC=INFO
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
-      - ORDERER_GENERAL_LISTENPORT=7050
+      - ORDERER_GENERAL_LISTENPORT=9050
       - ORDERER_GENERAL_LOCALMSPID=RegulatoryDepartmentOrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
       # enabled TLS
@@ -130,8 +130,8 @@ services:
       - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
       - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
       - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7053
-      - ORDERER_OPERATIONS_LISTENADDRESS=orderer.regulatoryDepartment.com:9443
+      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:9053
+      - ORDERER_OPERATIONS_LISTENADDRESS=orderer.regulatoryDepartment.com:11443
       - ORDERER_METRICS_PROVIDER=prometheus
     working_dir: /root
     command: orderer
@@ -140,9 +140,9 @@ services:
       - ../organizations/ordererOrganizations/regulatoryDepartment.com/orderers/orderer.regulatoryDepartment.com/tls/:/var/hyperledger/orderer/tls
       - orderer.regulatoryDepartment.com:/var/hyperledger/production/orderer
     ports:
-      - 7050:7050
-      - 7053:7053
-      - 9443:9443
+      - 9050:9050
+      - 9053:9053
+      - 11443:11443
     networks:
       - traceability
 
