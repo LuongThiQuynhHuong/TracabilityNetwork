@@ -1,0 +1,21 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "hyperledger_fabric_server",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node app.js"
+  },
+  "keywords": [
+    "expressjs"
+  ],
+  "author": "HuongLuong",
+  "license": "ISC",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.13.3",
+    "@hyperledger/fabric-gateway": "^1.7.1",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0"
+  }
+}
