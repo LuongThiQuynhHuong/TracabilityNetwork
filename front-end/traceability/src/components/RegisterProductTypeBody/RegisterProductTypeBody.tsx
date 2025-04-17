@@ -1,9 +1,11 @@
+import FormHeader from '@components/FormHeader/FormHeader';
+import { AppBodyProps } from '@utils/BaseIntefaces';
 import { Button, Container, Form } from 'react-bootstrap';
 
-const RegisterProductTypeBody = () => {
+const RegisterProductTypeBody : React.FC<AppBodyProps> = ({ organization }) => {
     return (
         <Container className="mt-5">
-          <h2>Register Product Type</h2>
+          <FormHeader organization={organization} bodyTitle="Register Product Type" />
           <Form>
             <Form.Group className="mb-3" controlId="packageName">
               <Form.Label>Package Name</Form.Label>

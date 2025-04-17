@@ -1,9 +1,11 @@
+import FormHeader from '@components/FormHeader/FormHeader';
+import { AppBodyProps } from '@utils/BaseIntefaces';
 import { Button, Container, Form } from 'react-bootstrap';
 
-const TransferFarmProductBody = () => {
+const TransferFarmProductBody : React.FC<AppBodyProps> = ({ organization }) => {
     return (
         <Container className="mt-5">
-          <h2>Transfer Farm Product</h2>
+          <FormHeader organization={organization} bodyTitle="Transfer Farm Product" />
           <Form>
             <Form.Group className="mb-3" controlId="farmProductId">
               <Form.Label>Farm Product Id</Form.Label>

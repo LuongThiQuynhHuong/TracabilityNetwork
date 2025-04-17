@@ -1,9 +1,11 @@
+import FormHeader from '@components/FormHeader/FormHeader';
+import { AppBodyProps } from '@utils/BaseIntefaces';
 import { Button, Container, Form } from 'react-bootstrap';
 
-const UpdatePackageStatusBody = () => {
+const UpdatePackageStatusBody : React.FC<AppBodyProps> = ({ organization }) => {
     return (
         <Container className="mt-5">
-          <h2>Update Package Status</h2>
+          <FormHeader organization={organization} bodyTitle="Update Package Status" />
           <Form>
             <Form.Group className="mb-3" controlId="packageId">
               <Form.Label>Package Id</Form.Label>
