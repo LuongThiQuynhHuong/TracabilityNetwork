@@ -13,12 +13,12 @@ import TransferPackageBody from '@components/TransferPackageBody/TransferPackage
 import UpdateFarmProductStatusBody from '@components/UpdateFarmProductStatusBody/UpdateFarmProductStatusBody';
 import UpdatePackageStatusBody from '@components/UpdatePackageStatusBody/UpdatePackageStatusBody';
 import WelcomeScreen from '@components/WelcomeScreen/WelcomeScreen';
-import { OrganizationKey, REGULATORY_DEPARTMENT_ORG, ADD_FARM_PRODUCT, ADD_PACKAGE, ADD_SHIPMENT, APPROVE_PRODUCT_TYPE, END_SHIPMENT, REGISTER_ORG_ROLE, REGISTER_PRODUCT_TYPE, START_SHIPMENT, TRANSFER_FARM_PRODUCT, TRANSFER_PACKAGE, UPDATE_FARM_PRODUCT_STATUS, UPDATE_PACKAGE_STATUS, GENERATE_TRACING_QR_CODE } from '@utils/AppConstant';
+import { OrganizationKey, ADD_FARM_PRODUCT, ADD_PACKAGE, ADD_SHIPMENT, APPROVE_PRODUCT_TYPE, END_SHIPMENT, REGISTER_ORG_ROLE, REGISTER_PRODUCT_TYPE, START_SHIPMENT, TRANSFER_FARM_PRODUCT, TRANSFER_PACKAGE, UPDATE_FARM_PRODUCT_STATUS, UPDATE_PACKAGE_STATUS, GENERATE_TRACING_QR_CODE } from '@utils/AppConstant';
 import { useState } from 'react'
 
 const MainPage = () => {
    const [activeComponent, setActiveComponent] = useState<string>('');
-  const [organization, setOrganization] = useState<OrganizationKey>(REGULATORY_DEPARTMENT_ORG);
+  const [organization, setOrganization] = useState<OrganizationKey>(OrganizationKey.RegulatoryDepartment);
 
   // 2. Function to handle the menu click and set component and organization
   const handleMenuClick = (body: string, org: OrganizationKey) => {

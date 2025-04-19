@@ -29,12 +29,6 @@ export const UPDATE_PACKAGE_STATUS_TITLE = "Update Pakage Status";
 export const GENERATE_TRACING_QR_CODE_TITLE = "Generate Tracable Package QR Code";
 
 // Organizations
-export const REGULATORY_DEPARTMENT_ORG = "regulatoryDepartment";
-export const FARM_ORG = "farm";
-export const PROCESSOR_ORG = "processor";
-export const DISTRIBUTOR_ORG = "distributor";
-export const RETAILER_ORG = "retailer";
-
 export const ORG_PROFILES = {
     "farm": {
         "title": "Farm organization"
@@ -53,7 +47,13 @@ export const ORG_PROFILES = {
     }
 }
 
-export type OrganizationKey = 'farm' | 'processor' | 'distributor' | 'retailer' | 'regulatoryDepartment';
+export enum OrganizationKey{
+    RegulatoryDepartment = "regulatoryDepartment",
+    Farm = "farm",
+    Processor = "processor",
+    Distributor = "distributor",
+    Retailer = "retailer"
+}
 
 // Api endpoints
 export const ADD_NEW_ORG_ENDPOINT = "/addNewOrganization";
@@ -70,3 +70,10 @@ export const TRANSFER_PACKAGE_ENDPOINT = "/transferPackage";
 export const END_SHIPMENT_ENDPOINT = "/endShipment";
 export const UPDATE_PACKAGE_STATUS_ENDPOINT = "/updatePackageStatus";
 export const TRACE_PROVENANCE_ENDPOINT = "/traceProvenance";
+
+export enum ToastStatus {
+    None    = 'none',
+    Loading = 'loading',
+    Success = 'success',
+    Error   = 'error',
+  }
