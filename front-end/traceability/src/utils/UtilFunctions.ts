@@ -1,3 +1,4 @@
+import { format, parseISO } from "date-fns";
 import { ToastStatus } from "./AppConstant";
 
 //Custom toast util functions
@@ -25,3 +26,8 @@ export const OnCloseCustomToast = (currentStatus: ToastStatus, setToastStatus: (
     setToastStatus(ToastStatus.None);
     setShowToast(false);
 }
+
+export const GetServerValidDateTimeFormat = (dateString: string): string => {
+    const date = parseISO(dateString);
+    return format(date, 'yyyy-MM-dd HH:mm:ss');
+  };

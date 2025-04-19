@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Button, Container, Form } from 'react-bootstrap';
-import { testApiController } from '@services/APIController';
+import { addFarmProductController, RequestModel } from '@services/APIController';
 import FormHeader from '@components/FormHeader/FormHeader';
 import { AppBodyProps } from '@utils/BaseIntefaces';
 import { ToastStatus } from '@utils/AppConstant';
 import CustomToast from '@components/CustomToast/CustomToast';
-import { OnCloseCustomToast, UpdateToastStatus } from '@utils/UtlilFunctions';
+import { OnCloseCustomToast, UpdateToastStatus } from '@utils/UtilFunctions';
 
 const AddFarmProductBody: React.FC<AppBodyProps> = ({ organization }) => {
   const [farmProductName, setFarmProductName] = useState('');
@@ -18,15 +18,19 @@ const AddFarmProductBody: React.FC<AppBodyProps> = ({ organization }) => {
     UpdateToastStatus(ToastStatus.Loading, setToastBodyText, setToastStatus);
     setShowToast(true);
 
-    const trace = {
-      organization,
-      packageKey: '1234567890',
-      checkbool: true,
+    const request : RequestModel = {
+      organization : organization,
       name: farmProductName,
     };
 
     try {
-      await testApiController(trace);
+      const response = await addFarmProductController(request);
+
+      if(!response.success)
+        throw new Error(response.message);
+
+      console.log("API response:", response.data);
+
       setToastStatus(ToastStatus.Success);
       UpdateToastStatus(ToastStatus.Success, setToastBodyText, setToastStatus);
     } catch (err) {

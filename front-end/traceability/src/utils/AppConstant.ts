@@ -55,6 +55,14 @@ export enum OrganizationKey{
     Retailer = "retailer"
 }
 
+export enum OrganizationRole{
+    RegulatoryDepartment = "RegulatoryDepartment",
+    Farm = "Farm",
+    Processor = "Processor",
+    Distributor = "Distributor",
+    Retailer = "Retailer"
+}
+
 // Api endpoints
 export const ADD_NEW_ORG_ENDPOINT = "/addNewOrganization";
 export const REGISTER_ORG_ROLE_ENDPOINT = "/registerOrgRole";
@@ -77,3 +85,15 @@ export enum ToastStatus {
     Success = 'success',
     Error   = 'error',
   }
+
+export enum FarmProductStatus {
+    Growing = "Growing",
+    Mature = "Mature",
+    Processed = "Processed",
+}
+
+export enum PackageStatus {
+    Packaged = "Packaged",
+    Shipping = "Shipping",
+    Distributed = "Distributed",
+}
