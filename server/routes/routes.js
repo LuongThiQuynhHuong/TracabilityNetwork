@@ -1,4 +1,5 @@
 const express = require("express");
+const fs = require('fs');
 const { clientApplication } = require("./client");
 
 const constants = require("../utils/contants")
@@ -611,9 +612,9 @@ router.post(constants.API_ENDPOINT.TRACE_PROVENANCE, async (req, res) => {
 //test server
 router.post("/test", async (req, res) => {
   try {
-    const { organization, packageKey, checkbool } = req.body;
+    const { organization} = req.body;
 
-    if (!organization || !packageKey ) {
+    if (!organization) {
       return res
         .status(400)
         .json({ success: false, message: "All fields are required." });
@@ -623,11 +624,8 @@ router.post("/test", async (req, res) => {
       .status(201)
       .json({
         success: true,
-        message: "test",
-        data: { organization : organization,
-          packageKey : packageKey,
-          checkbool : checkbool
-         },
+        message: `Request from ${organization} received successfully!`,
+        data: JSON.parse(fs.readFileSync('./utils/testData.json', 'utf8')),
       });
   } catch (error) {
     console.error("Error tracing provenance request:", error);

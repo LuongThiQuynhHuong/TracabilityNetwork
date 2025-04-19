@@ -55,8 +55,6 @@ const MainPage = () => {
       case GENERATE_TRACING_QR_CODE:
         return <TracingCodeGenerationBody organization={organization} />;
       default:
-        //Todo Huong: this is the sample ui for the tracing table
-        // return <CombinedHistoryUI history={sampleHistory} />;
         return <WelcomeScreen />;
     }
   };

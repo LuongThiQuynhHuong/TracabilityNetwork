@@ -1,52 +1,16 @@
-import { FC } from 'react';
+import { CombinedHistory } from '@utils/BaseIntefaces';
 import { Table, Container } from 'react-bootstrap';
 
-interface Package {
-  docType: string;
-  id: string;
-  rawProductId: string;
-  productTypeId: string;
-  status: string;
-  packagedDateTime: string;
-  weight: number;
-  lastShipmentId: string;
-  processorOrgId: string;
-  currentOwnerOrgId: string;
+interface CombinedHistoryUIProps {
+  packageId: string;
+  history: CombinedHistory;
 }
 
-interface FarmProduct {
-  docType: string;
-  id: string;
-  name: string;
-  status: string;
-  farmOrgId: string;
-  currentOwnerOrgId: string;
-}
-
-interface PackageHistory {
-  record: Package;
-  txId: string;
-  timestamp: string;
-  isDelete: boolean;
-}
-
-interface RawProductHistory {
-  record: FarmProduct;
-  txId: string;
-  timestamp: string;
-  isDelete: boolean;
-}
-
-interface CombinedHistory {
-  packageHistory: PackageHistory[];
-  rawProductHistory: RawProductHistory[];
-}
-
-const CombinedHistoryUI: FC<{ history: CombinedHistory }> = ({ history }) => {
+const CombinedHistoryUI: React.FC<CombinedHistoryUIProps> = ({ packageId, history }) => {
   console.log('CombinedHistoryUI', history);
   return (
     <Container>
-      <h1>Combined History</h1>
+      <h1 style={{ paddingTop: "20px", textAlign: "center" }}>Package History for ID '{packageId}'</h1>
 
       {/* Display Package History */}
       <h2>Package History</h2>
@@ -56,10 +20,13 @@ const CombinedHistoryUI: FC<{ history: CombinedHistory }> = ({ history }) => {
             <th>TX ID</th>
             <th>Package ID</th>
             <th>Raw Product ID</th>
+            <th>Product Type ID</th>
             <th>Status</th>
             <th>Packaged Date</th>
             <th>Weight</th>
-            <th>Is Delete</th>
+            <th>Last Shipment Id</th>
+            <th>Processor Org Id</th>
+            <th>Current Owner Org Id</th>
           </tr>
         </thead>
         <tbody>
@@ -68,10 +35,13 @@ const CombinedHistoryUI: FC<{ history: CombinedHistory }> = ({ history }) => {
               <td>{ph.txId}</td>
               <td>{ph.record.id}</td>
               <td>{ph.record.rawProductId}</td>
+              <td>{ph.record.productTypeId}</td>
               <td>{ph.record.status}</td>
               <td>{ph.record.packagedDateTime}</td>
               <td>{ph.record.weight}</td>
-              <td>{ph.isDelete ? 'Yes' : 'No'}</td>
+              <td>{ph.record.lastShipmentId}</td>
+              <td>{ph.record.processorOrgId}</td>
+              <td>{ph.record.currentOwnerOrgId}</td>
             </tr>
           ))}
         </tbody>
@@ -87,7 +57,7 @@ const CombinedHistoryUI: FC<{ history: CombinedHistory }> = ({ history }) => {
             <th>Product Name</th>
             <th>Status</th>
             <th>Farm Org ID</th>
-            <th>Is Delete</th>
+            <th>Current Owner Org Id</th>
           </tr>
         </thead>
         <tbody>
@@ -98,7 +68,7 @@ const CombinedHistoryUI: FC<{ history: CombinedHistory }> = ({ history }) => {
               <td>{rph.record.name}</td>
               <td>{rph.record.status}</td>
               <td>{rph.record.farmOrgId}</td>
-              <td>{rph.isDelete ? 'Yes' : 'No'}</td>
+              <td>{rph.record.currentOwnerOrgId}</td>
             </tr>
           ))}
         </tbody>
