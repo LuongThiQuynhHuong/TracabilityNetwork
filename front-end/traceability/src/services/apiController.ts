@@ -1,5 +1,5 @@
 import { ADD_NEW_ORG_ENDPOINT, REGISTER_ORG_ROLE_ENDPOINT, ADD_FARM_PRODUCT_ENDPOINT, UPDATE_FARM_PRODUCT_STATUS_ENDPOINT, TRANSFER_FARM_PRODUCT_ENDPOINT, REGISTER_PRODUCT_TYPE_ENDPOINT, APPROVE_PRODUCT_TYPE_ENDPOINT, ADD_PACKAGE_ENDPOINT, ADD_SHIPMENT_ENDPOINT, START_SHIPMENT_ENDPOINT, TRANSFER_PACKAGE_ENDPOINT, END_SHIPMENT_ENDPOINT, UPDATE_PACKAGE_STATUS_ENDPOINT, TRACE_PROVENANCE_ENDPOINT } from "@utils/AppConstant";
-import { API_BASE_URL } from "@utils/ConfigConstant";
+import { EXTERNAL_API_SERVER_URL, LOCAL_API_SERVER_URL } from "@utils/ConfigConstant";
 
 // Define TypeScript interfaces for the resources returned by your API (adjust as needed)
 export interface RequestModel {
@@ -32,22 +32,14 @@ export interface ResponseModel {
     data?: object;
   }
 
-export async function testApiController(request: Partial<RequestModel>): Promise<ResponseModel> {
-    const response = await fetch(`${API_BASE_URL}/test`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(request)
-    });
-    if (!response.ok) {
-        throw new Error('Failed to create trace');
-    }
-    return response.json();
+export async function testApiController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
+  const { organization, packageKey, checkbool } = request;
+    return makeApiRequest("/test", { organization, packageKey, checkbool }, isUseExternalServerUrl);
 }
 
-async function makeApiRequest(endpoint: string, request: Partial<RequestModel>): Promise<ResponseModel> {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+async function makeApiRequest(endpoint: string, request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
+    const apiUrl = isUseExternalServerUrl? `${EXTERNAL_API_SERVER_URL}${endpoint}` : `${LOCAL_API_SERVER_URL}${endpoint}`;
+    const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -61,72 +53,72 @@ async function makeApiRequest(endpoint: string, request: Partial<RequestModel>):
     return response.json();
   }
   
-export async function addNewOrgController(request: Partial<RequestModel>): Promise<ResponseModel> {
+export async function addNewOrgController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
     const { organization } = request;
-    return makeApiRequest(ADD_NEW_ORG_ENDPOINT, { organization });
+    return makeApiRequest(ADD_NEW_ORG_ENDPOINT, { organization }, isUseExternalServerUrl);
   }
   
-export async function registerOrgRoleController(request: Partial<RequestModel>): Promise<ResponseModel> {
+export async function registerOrgRoleController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
     const { organization, role, orgKey } = request;
-    return makeApiRequest(REGISTER_ORG_ROLE_ENDPOINT, { organization, role, orgKey });
+    return makeApiRequest(REGISTER_ORG_ROLE_ENDPOINT, { organization, role, orgKey }, isUseExternalServerUrl);
   }
   
-export async function addFarmProductController(request: Partial<RequestModel>): Promise<ResponseModel> {
+export async function addFarmProductController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
     const { organization, name } = request;
-    return makeApiRequest(ADD_FARM_PRODUCT_ENDPOINT, { organization, name });
+    return makeApiRequest(ADD_FARM_PRODUCT_ENDPOINT, { organization, name }, isUseExternalServerUrl);
   }
   
-export async function updateFarmProductStatusController(request: Partial<RequestModel>): Promise<ResponseModel> {
+export async function updateFarmProductStatusController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
     const { organization, farmProductKey, newStatus } = request;
-    return makeApiRequest(UPDATE_FARM_PRODUCT_STATUS_ENDPOINT, { organization, farmProductKey, newStatus });
+    return makeApiRequest(UPDATE_FARM_PRODUCT_STATUS_ENDPOINT, { organization, farmProductKey, newStatus }, isUseExternalServerUrl);
   }
   
-export async function transferFarmProductController(request: Partial<RequestModel>): Promise<ResponseModel> {
+export async function transferFarmProductController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
     const { organization, farmProductKey, newOrgKey } = request;
-    return makeApiRequest(TRANSFER_FARM_PRODUCT_ENDPOINT, { organization, farmProductKey, newOrgKey });
+    return makeApiRequest(TRANSFER_FARM_PRODUCT_ENDPOINT, { organization, farmProductKey, newOrgKey }, isUseExternalServerUrl);
   }
   
-export async function registerProductTypeController(request: Partial<RequestModel>): Promise<ResponseModel> {
+export async function registerProductTypeController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
     const { organization, name } = request;
-    return makeApiRequest(REGISTER_PRODUCT_TYPE_ENDPOINT, { organization, name });
+    return makeApiRequest(REGISTER_PRODUCT_TYPE_ENDPOINT, { organization, name }, isUseExternalServerUrl);
   }
   
-export async function approveProductTypeController(request: Partial<RequestModel>): Promise<ResponseModel> {
+export async function approveProductTypeController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
     const { organization, productTypeKey, isApproved } = request;
-    return makeApiRequest(APPROVE_PRODUCT_TYPE_ENDPOINT, { organization, productTypeKey, isApproved });
+    return makeApiRequest(APPROVE_PRODUCT_TYPE_ENDPOINT, { organization, productTypeKey, isApproved }, isUseExternalServerUrl);
   }
   
-export async function addPackageController(request: Partial<RequestModel>): Promise<ResponseModel> {
+export async function addPackageController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
     const { organization, rawProductKey, productTypeKey, packagedDateTime, weight } = request;
-    return makeApiRequest(ADD_PACKAGE_ENDPOINT, { organization, rawProductKey, productTypeKey, packagedDateTime, weight });
+    return makeApiRequest(ADD_PACKAGE_ENDPOINT, { organization, rawProductKey, productTypeKey, packagedDateTime, weight }, isUseExternalServerUrl);
   }
   
-export async function addShipmentController(request: Partial<RequestModel>): Promise<ResponseModel> {
+export async function addShipmentController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
     const { organization, fromAddress, destinationAddress, startTime, processorOrgKey, retailerOrgKey } = request;
-    return makeApiRequest(ADD_SHIPMENT_ENDPOINT, { organization, fromAddress, destinationAddress, startTime, processorOrgKey, retailerOrgKey });
+    return makeApiRequest(ADD_SHIPMENT_ENDPOINT, { organization, fromAddress, destinationAddress, startTime, processorOrgKey, retailerOrgKey }, isUseExternalServerUrl);
   }
   
-export async function startShipmentController(request: Partial<RequestModel>): Promise<ResponseModel> {
+export async function startShipmentController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
     const { organization, shipmentKey, packageKey } = request;
-    return makeApiRequest(START_SHIPMENT_ENDPOINT, { organization, shipmentKey, packageKey });
+    return makeApiRequest(START_SHIPMENT_ENDPOINT, { organization, shipmentKey, packageKey }, isUseExternalServerUrl);
   }
   
-export async function transferPackageController(request: Partial<RequestModel>): Promise<ResponseModel> {
+export async function transferPackageController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
     const { organization, packageKey, newOrgKey } = request;
-    return makeApiRequest(TRANSFER_PACKAGE_ENDPOINT, { organization, packageKey, newOrgKey });
+    return makeApiRequest(TRANSFER_PACKAGE_ENDPOINT, { organization, packageKey, newOrgKey }, isUseExternalServerUrl);
   }
   
-export async function endShipmentController(request: Partial<RequestModel>): Promise<ResponseModel> {
+export async function endShipmentController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
     const { organization, shipmentKey } = request;
-    return makeApiRequest(END_SHIPMENT_ENDPOINT, { organization, shipmentKey });
+    return makeApiRequest(END_SHIPMENT_ENDPOINT, { organization, shipmentKey }, isUseExternalServerUrl);
   }
   
-export async function updatePackageStatusController(request: Partial<RequestModel>): Promise<ResponseModel> {
+export async function updatePackageStatusController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
     const { organization, packageKey, status } = request;
-    return makeApiRequest(UPDATE_PACKAGE_STATUS_ENDPOINT, { organization, packageKey, status });
+    return makeApiRequest(UPDATE_PACKAGE_STATUS_ENDPOINT, { organization, packageKey, status }, isUseExternalServerUrl);
   }
   
-export async function traceProvenanceController(request: Partial<RequestModel>): Promise<ResponseModel> {
+export async function traceProvenanceController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
     const { organization, packageKey } = request;
-    return makeApiRequest(TRACE_PROVENANCE_ENDPOINT, { organization, packageKey });
+    return makeApiRequest(TRACE_PROVENANCE_ENDPOINT, { organization, packageKey }, isUseExternalServerUrl);
   }

@@ -57,8 +57,6 @@ const MainPage = () => {
       default:
         //Todo Huong: this is the sample ui for the tracing table
         // return <CombinedHistoryUI history={sampleHistory} />;
-        //Todo Huong: This is test scan QR code
-        // return <GenerateQRCode />;
         return <WelcomeScreen />;
     }
   };

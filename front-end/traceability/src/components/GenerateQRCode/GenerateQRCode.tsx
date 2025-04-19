@@ -1,13 +1,14 @@
 import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { APP_PORT, LOCAL_IP, TRACING_ENDPOINT } from '@utils/ConfigConstant';
+import { AppBodyProps } from '@utils/BaseIntefaces';
 
-interface GenerateQRCodeProps {
+interface GenerateQRCodeProps extends AppBodyProps {
   packageKey: string;
 }
 
-const GenerateQRCode: React.FC<GenerateQRCodeProps> = ({ packageKey }) => {
-  const url = `http://${LOCAL_IP}:${APP_PORT}${TRACING_ENDPOINT}?packageKey=${packageKey}`;
+const GenerateQRCode: React.FC<GenerateQRCodeProps> = ({ packageKey, organization }) => {
+  const url = `http://${LOCAL_IP}:${APP_PORT}${TRACING_ENDPOINT}?organization=${organization}&packageKey=${packageKey}`;
 
   return (
     <div>

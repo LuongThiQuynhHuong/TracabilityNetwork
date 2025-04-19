@@ -45,7 +45,7 @@ const TracingCodeGenerationBody : React.FC<AppBodyProps> = ({ organization }) =>
           <p style={{ fontSize: '20px', fontWeight: 'bold' }}>
             Generated QR code for the package with the key: {generatedPackageKey}
           </p>
-          <GenerateQRCode packageKey={generatedPackageKey} />
+          <GenerateQRCode packageKey={generatedPackageKey} organization={organization} />
         </div>
       )}
     </Container>

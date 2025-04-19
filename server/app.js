@@ -4,9 +4,20 @@ const cors = require("cors");
 const app = express();
 const routes = require("./routes/routes");
 
+const FRONTEND_ORIGINS = [
+  `${process.env.FRONTEND_URL}:${process.env.FRONTEND_PORT}`,
+  `http://localhost:${process.env.FRONTEND_PORT}`
+];
+
 app.use(
   cors({ 
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    origin: function(origin, callback){
+      if(!origin) return callback(null, true);
+      if(FRONTEND_ORIGINS.includes(origin)){
+        return callback(null, true);
+      }
+      callback(new Error("Not allowed by CORS"));
+    }
   })
 );
 
