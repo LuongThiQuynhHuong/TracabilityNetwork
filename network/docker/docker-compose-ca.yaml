@@ -1,8 +1,8 @@
 version: '3.7'
 
 networks:
-  traceability:
-    name: fabric_traceability
+  test:
+    name: fabric_test
 
 services:
 
@@ -24,10 +24,10 @@ services:
       - ../organizations/fabric-ca/regulatoryDepartment:/etc/hyperledger/fabric-ca-server
     container_name: ca_regulatoryDepartment
     networks:
-      - traceability
+      - test
 
-# -------------------------------------------------------------------
-
+  
+      
   ca_farm:
     image: hyperledger/fabric-ca:latest
     labels:
@@ -46,9 +46,7 @@ services:
       - ../organizations/fabric-ca/farm:/etc/hyperledger/fabric-ca-server
     container_name: ca_farm
     networks:
-      - traceability
-
-# -------------------------------------------------------------------
+      - test
 
   ca_processor:
     image: hyperledger/fabric-ca:latest
@@ -58,20 +56,18 @@ services:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca-processor
       - FABRIC_CA_SERVER_TLS_ENABLED=true
-      - FABRIC_CA_SERVER_PORT=11054
-      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:11055
+      - FABRIC_CA_SERVER_PORT=10054
+      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:12054
     ports:
-      - "11054:11054"
-      - "11055:11055"
+      - "10054:10054"
+      - "12054:12054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
       - ../organizations/fabric-ca/processor:/etc/hyperledger/fabric-ca-server
     container_name: ca_processor
     networks:
-      - traceability
+      - test
 
-# -------------------------------------------------------------------
-      
   ca_distributor:
     image: hyperledger/fabric-ca:latest
     labels:
@@ -80,27 +76,25 @@ services:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca-distributor
       - FABRIC_CA_SERVER_TLS_ENABLED=true
-      - FABRIC_CA_SERVER_PORT=12054
-      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:12055
+      - FABRIC_CA_SERVER_PORT=11054
+      - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:11055
     ports:
-      - "12054:12054"
-      - "12055:12055"
+      - "11054:11054"
+      - "11055:11055"
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
       - ../organizations/fabric-ca/distributor:/etc/hyperledger/fabric-ca-server
     container_name: ca_distributor
     networks:
-      - traceability
+      - test
 
-# -------------------------------------------------------------------
-      
-  ca_retailer:
+  ca_regulatoryDepartmentOrderer:
     image: hyperledger/fabric-ca:latest
     labels:
       service: hyperledger-fabric
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-      - FABRIC_CA_SERVER_CA_NAME=ca-retailer
+      - FABRIC_CA_SERVER_CA_NAME=ca-regulatoryDepartmentOrderer
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_PORT=9054
       - FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:19054
@@ -109,7 +103,7 @@ services:
       - "19054:19054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
-      - ../organizations/fabric-ca/retailer:/etc/hyperledger/fabric-ca-server
-    container_name: ca_retailer
+      - ../organizations/fabric-ca/regulatoryDepartmentOrderer:/etc/hyperledger/fabric-ca-server
+    container_name: ca_regulatoryDepartmentOrderer
     networks:
-      - traceability
+      - test

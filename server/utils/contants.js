@@ -1,6 +1,6 @@
 const HLF_CONSTANTS = {
-  CHANNEL_NAME : "tracingchannel",
-  CHAINCODE_NAME : "Traceability-supply-chain",
+  CHANNEL_NAME : "ptracingchannel",
+  CHAINCODE_NAME : "PTracing-supply-chain",
   CONTRACT_NAME : "SmartContract",
 };
 

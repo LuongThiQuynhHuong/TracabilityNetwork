@@ -1,51 +1,8 @@
----
-################################################################################
-#
-#   Section: Organizations
-#
-#   - This section defines the different organizational identities which will
-#   be referenced later in the configuration.
-#
-################################################################################
 Organizations:
-  - &FarmOrdererOrg
-    Name: FarmOrdererOrg
-    ID: FarmOrdererMSP
-    MSPDir: ../organizations/ordererOrganizations/farm.com/msp
-    Policies:
-      Readers:
-        Type: Signature
-        Rule: "OR('FarmOrdererMSP.member')"
-      Writers:
-        Type: Signature
-        Rule: "OR('FarmOrdererMSP.member')"
-      Admins:
-        Type: Signature
-        Rule: "OR('FarmOrdererMSP.admin')"
-    OrdererEndpoints:
-      - orderer.farm.com:7050
-      
-  - &ProcessorOrdererOrg
-    Name: ProcessorOrdererOrg
-    ID: ProcessorOrdererMSP
-    MSPDir: ../organizations/ordererOrganizations/processor.com/msp
-    Policies:
-      Readers:
-        Type: Signature
-        Rule: "OR('ProcessorOrdererMSP.member')"
-      Writers:
-        Type: Signature
-        Rule: "OR('ProcessorOrdererMSP.member')"
-      Admins:
-        Type: Signature
-        Rule: "OR('ProcessorOrdererMSP.admin')"
-    OrdererEndpoints:
-      - orderer.processor.com:7050
-      
-  - &RegulatoryDepartmentOrdererOrg
-    Name: RegulatoryDepartmentOrdererOrg
+  - &RegulatoryDepartmentOrderer
+    Name: RegulatoryDepartmentOrderer
     ID: RegulatoryDepartmentOrdererMSP
-    MSPDir: ../organizations/ordererOrganizations/regulatoryDepartment.com/msp
+    MSPDir: ../organizations/ordererOrganizations/ptracing.com/msp
     Policies:
       Readers:
         Type: Signature
@@ -57,148 +14,89 @@ Organizations:
         Type: Signature
         Rule: "OR('RegulatoryDepartmentOrdererMSP.admin')"
     OrdererEndpoints:
-      - orderer.regulatoryDepartment.com:7050
+      - regulatorDepartmentOrderer.ptracing.com:7050
 
-  - &RegulatoryDepartment
-    Name: RegulatoryDepartmentMSP
-    ID: RegulatoryDepartmentMSP
-    MSPDir: ../organizations/peerOrganizations/regulatoryDepartment.com/msp
+  - &regulatoryDepartment
+    Name: regulatoryDepartmentMSP
+    ID: regulatoryDepartmentMSP
+    MSPDir: ../organizations/peerOrganizations/regulatoryDepartment.ptracing.com/msp
     Policies:
       Readers:
         Type: Signature
-        Rule: "OR('RegulatoryDepartmentMSP.admin', 'RegulatoryDepartmentMSP.peer', 'RegulatoryDepartmentMSP.client')"
+        Rule: "OR('regulatoryDepartmentMSP.admin', 'regulatoryDepartmentMSP.peer', 'regulatoryDepartmentMSP.client')"
       Writers:
         Type: Signature
-        Rule: "OR('RegulatoryDepartmentMSP.admin', 'RegulatoryDepartmentMSP.client')"
+        Rule: "OR('regulatoryDepartmentMSP.admin', 'regulatoryDepartmentMSP.client')"
       Admins:
         Type: Signature
-        Rule: "OR('RegulatoryDepartmentMSP.admin')"
+        Rule: "OR('regulatoryDepartmentMSP.admin')"
       Endorsement:
         Type: Signature
-        Rule: "OR('RegulatoryDepartmentMSP.peer')"
-    AnchorPeers:
-      - Host: peer0.regulatoryDepartment.com
-        Port: 7051
+        Rule: "OR('regulatoryDepartmentMSP.peer')"
 
-  - &Farm
-    Name: FarmMSP
-    ID: FarmMSP
-    MSPDir: ../organizations/peerOrganizations/farm.com/msp
+  - &farm
+    Name: farmMSP
+    ID: farmMSP
+    MSPDir: ../organizations/peerOrganizations/farm.ptracing.com/msp
     Policies:
       Readers:
         Type: Signature
-        Rule: "OR('FarmMSP.admin', 'FarmMSP.peer', 'FarmMSP.client')"
+        Rule: "OR('farmMSP.admin', 'farmMSP.peer', 'farmMSP.client')"
       Writers:
         Type: Signature
-        Rule: "OR('FarmMSP.admin', 'FarmMSP.client')"
+        Rule: "OR('farmMSP.admin', 'farmMSP.client')"
       Admins:
         Type: Signature
-        Rule: "OR('FarmMSP.admin')"
+        Rule: "OR('farmMSP.admin')"
       Endorsement:
         Type: Signature
-        Rule: "OR('FarmMSP.peer')"
-    AnchorPeers:
-      - Host: peer0.farm.com
-        Port: 8051
+        Rule: "OR('farmMSP.peer')"
 
-  - &Processor
-    Name: ProcessorMSP
-    ID: ProcessorMSP
-    MSPDir: ../organizations/peerOrganizations/processor.com/msp
+  - &processor
+    Name: processorMSP
+    ID: processorMSP
+    MSPDir: ../organizations/peerOrganizations/processor.ptracing.com/msp
     Policies:
       Readers:
         Type: Signature
-        Rule: "OR('ProcessorMSP.admin', 'ProcessorMSP.peer', 'ProcessorMSP.client')"
+        Rule: "OR('processorMSP.admin', 'processorMSP.peer', 'processorMSP.client')"
       Writers:
         Type: Signature
-        Rule: "OR('ProcessorMSP.admin', 'ProcessorMSP.client')"
+        Rule: "OR('processorMSP.admin', 'processorMSP.client')"
       Admins:
         Type: Signature
-        Rule: "OR('ProcessorMSP.admin')"
+        Rule: "OR('processorMSP.admin')"
       Endorsement:
         Type: Signature
-        Rule: "OR('ProcessorMSP.peer')"
-    AnchorPeers:
-      - Host: peer0.processor.com
-        Port: 9051
+        Rule: "OR('processorMSP.peer')"
 
-  - &Distributor
-    Name: DistributorMSP
-    ID: DistributorMSP
-    MSPDir: ../organizations/peerOrganizations/distributor.com/msp
+  - &distributor
+    Name: distributorMSP
+    ID: distributorMSP
+    MSPDir: ../organizations/peerOrganizations/distributor.ptracing.com/msp
     Policies:
       Readers:
         Type: Signature
-        Rule: "OR('DistributorMSP.admin', 'DistributorMSP.peer', 'DistributorMSP.client')"
+        Rule: "OR('distributorMSP.admin', 'distributorMSP.peer', 'distributorMSP.client')"
       Writers:
         Type: Signature
-        Rule: "OR('DistributorMSP.admin', 'DistributorMSP.client')"
+        Rule: "OR('distributorMSP.admin', 'distributorMSP.client')"
       Admins:
         Type: Signature
-        Rule: "OR('DistributorMSP.admin')"
+        Rule: "OR('distributorMSP.admin')"
       Endorsement:
         Type: Signature
-        Rule: "OR('DistributorMSP.peer')"
-    AnchorPeers:
-      - Host: peer0.distributor.com
-        Port: 10051
+        Rule: "OR('distributorMSP.peer')"
 
-  - &Retailer
-    Name: RetailerMSP
-    ID: RetailerMSP
-    MSPDir: ../organizations/peerOrganizations/retailer.com/msp
-    Policies:
-      Readers:
-        Type: Signature
-        Rule: "OR('RetailerMSP.admin', 'RetailerMSP.peer', 'RetailerMSP.client')"
-      Writers:
-        Type: Signature
-        Rule: "OR('RetailerMSP.admin', 'RetailerMSP.client')"
-      Admins:
-        Type: Signature
-        Rule: "OR('RetailerMSP.admin')"
-      Endorsement:
-        Type: Signature
-        Rule: "OR('RetailerMSP.peer')"
-    AnchorPeers:
-      - Host: peer0.retailer.com
-        Port: 11051
 
-################################################################################
-#
-#   SECTION: Capabilities
-#
-#   - This section defines the capabilities of fabric network. This is a new
-#   concept as of v1.1.0 and should not be utilized in mixed networks with
-#   v1.0.x peers and orderers.  Capabilities define features which must be
-#   present in a fabric binary for that binary to safely participate in the
-#   fabric network.  For instance, if a new MSP type is added, newer binaries
-#   might recognize and validate the signatures from this type, while older
-#   binaries without this support would be unable to validate those
-#   transactions.  This could lead to different versions of the fabric binaries
-#   having different world states.  Instead, defining a capability for a channel
-#   informs those binaries without this capability that they must cease
-#   processing transactions until they have been upgraded.  For v1.0.x if any
-#   capabilities are defined (including a map with all capabilities turned off)
-#   then the v1.0.x peer will deliberately crash.
-#
-################################################################################
-Capabilities:
+Capabilities:  
   Channel: &ChannelCapabilities
     V2_0: true
   Orderer: &OrdererCapabilities
     V2_0: true
   Application: &ApplicationCapabilities
     V2_5: true
-
-################################################################################
-#
-#   SECTION: Application
-#
-#   - This section defines the values to encode into a config transaction or
-#   genesis block for application related parameters
-#
-################################################################################
+    
 Application: &ApplicationDefaults
   Organizations:
   Policies:
@@ -219,40 +117,10 @@ Application: &ApplicationDefaults
       Rule: "MAJORITY Endorsement"
   Capabilities:
     <<: *ApplicationCapabilities
-################################################################################
-#
-#   SECTION: Orderer
-#
-#   - This section defines the values to encode into a config transaction or
-#   genesis block for orderer related parameters
-#
-################################################################################
+
 Orderer: &OrdererDefaults
-  OrdererType: etcdraft
-  EtcdRaft:
-    Consenters:
-      - Host: orderer.farm.com
-        Port: 7050
-        ClientTLSCert: ../organizations/ordererOrganizations/farm.com/orderers/orderer.farm.com/tls/server.crt
-        ServerTLSCert: ../organizations/ordererOrganizations/farm.com/orderers/orderer.farm.com/tls/server.crt
-      - Host: orderer.processor.com
-        Port: 8050
-        ClientTLSCert: ../organizations/ordererOrganizations/processor.com/orderers/orderer.processor.com/tls/server.crt
-        ServerTLSCert: ../organizations/ordererOrganizations/processor.com/orderers/orderer.processor.com/tls/tls/server.crt
-      - Host: orderer.regulatoryDepartment.com
-        Port: 9050
-        ClientTLSCert: ../organizations/ordererOrganizations/regulatoryDepartment.com/orderers/orderer.regulatoryDepartment.com/tls/server.crt
-        ServerTLSCert: ../organizations/ordererOrganizations/regulatoryDepartment.com/orderers/orderer.regulatoryDepartment.com/tls/server.crt
-    Options:
-      TickInterval: 2500ms
-      ElectionTick: 5
-      HeartbeatTick: 1
-      MaxInflightBlocks: 5
-      SnapshotIntervalSize: 16 MB
   Addresses:
-    - orderer.farm.com:7050
-    - orderer.processor.com:8050
-    - orderer.regulatoryDepartment.com:9050
+    - regulatorDepartmentOrderer.ptracing.com:7050
   BatchTimeout: 2s
   BatchSize:
     MaxMessageCount: 10
@@ -273,14 +141,6 @@ Orderer: &OrdererDefaults
       Type: ImplicitMeta
       Rule: "ANY Writers"
 
-################################################################################
-#
-#   CHANNEL
-#
-#   This section defines the values to encode into a config transaction or
-#   genesis block for channel related parameters.
-#
-################################################################################
 Channel: &ChannelDefaults
   Policies:
     Readers:
@@ -295,45 +155,26 @@ Channel: &ChannelDefaults
   Capabilities:
     <<: *ChannelCapabilities
 
-################################################################################
-#
-#   Profile
-#
-#   - Different configuration profiles may be encoded here to be specified
-#   as parameters to the configtxgen tool
-#
-################################################################################
 Profiles:
-  RaftTraceabilityApplicationGenesis:
+  ChannelUsingRaft:
     <<: *ChannelDefaults
     Orderer:
       <<: *OrdererDefaults
       OrdererType: etcdraft
+      EtcdRaft:
+        Consenters:
+          - Host: regulatorDepartmentOrderer.ptracing.com
+            Port: 7050
+            ClientTLSCert: ../organizations/ordererOrganizations/ptracing.com/orderers/regulatorDepartmentOrderer.ptracing.com/tls/server.crt
+            ServerTLSCert: ../organizations/ordererOrganizations/ptracing.com/orderers/regulatorDepartmentOrderer.ptracing.com/tls/server.crt
       Organizations:
-        - *RegulatoryDepartmentOrdererOrg
-        - *FarmOrdererOrg
-        - *ProcessorOrdererOrg
-      Capabilities:
-        <<: *OrdererCapabilities
-    Consortiums:
-      TraceabilityConsortium:
-        Organizations:
-          - *RegulatoryDepartment
-          - *Farm
-          - *Processor
-          - *Distributor
-          - *Retailer
-
-  TraceabilityChannel:
-    Consortium: TraceabilityConsortium
-    <<: *ChannelDefaults
+        - *RegulatoryDepartmentOrderer
+      Capabilities: *OrdererCapabilities
     Application:
       <<: *ApplicationDefaults
       Organizations:
-        - *RegulatoryDepartment
-        - *Farm
-        - *Processor
-        - *Distributor
-        - *Retailer
-      Capabilities:
-        <<: *ApplicationCapabilities
+        - *regulatoryDepartment
+        - *processor
+        - *farm
+        - *distributor
+      Capabilities: *ApplicationCapabilities
