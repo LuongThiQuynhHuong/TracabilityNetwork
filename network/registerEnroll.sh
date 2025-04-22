@@ -130,11 +130,6 @@ function createfarm() {
   fabric-ca-client register --caname ca-farm --id.name peer0 --id.secret peer0pw --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/farm/ca-cert.pem"
   { set +x; } 2>/dev/null
 
-  echo "Registering peer1"
-  set -x
-  fabric-ca-client register --caname ca-farm --id.name peer1 --id.secret peer1pw --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/farm/ca-cert.pem"
-  { set +x; } 2>/dev/null
-
   echo "Registering user"
   set -x
   fabric-ca-client register --caname ca-farm --id.name user1 --id.secret user1pw --id.type client --tls.certfiles "${PWD}/organizations/fabric-ca/farm/ca-cert.pem"
@@ -161,23 +156,6 @@ function createfarm() {
   cp "${PWD}/organizations/peerOrganizations/farm.ptracing.com/peers/peer0.farm.ptracing.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/farm.ptracing.com/peers/peer0.farm.ptracing.com/tls/ca.crt"
   cp "${PWD}/organizations/peerOrganizations/farm.ptracing.com/peers/peer0.farm.ptracing.com/tls/signcerts/"* "${PWD}/organizations/peerOrganizations/farm.ptracing.com/peers/peer0.farm.ptracing.com/tls/server.crt"
   cp "${PWD}/organizations/peerOrganizations/farm.ptracing.com/peers/peer0.farm.ptracing.com/tls/keystore/"* "${PWD}/organizations/peerOrganizations/farm.ptracing.com/peers/peer0.farm.ptracing.com/tls/server.key"
-
-    echo "Generating the peer1 msp"
-  set -x
-  fabric-ca-client enroll -u https://peer1:peer1pw@localhost:8054 --caname ca-farm -M "${PWD}/organizations/peerOrganizations/farm.ptracing.com/peers/peer1.farm.ptracing.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/farm/ca-cert.pem"
-  { set +x; } 2>/dev/null
-
-  cp "${PWD}/organizations/peerOrganizations/farm.ptracing.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/farm.ptracing.com/peers/peer1.farm.ptracing.com/msp/config.yaml"
-
-  echo "Generating the peer1-tls certificates, use --csr.hosts to specify Subject Alternative Names"
-  set -x
-  fabric-ca-client enroll -u https://peer1:peer1pw@localhost:8054 --caname ca-farm -M "${PWD}/organizations/peerOrganizations/farm.ptracing.com/peers/peer1.farm.ptracing.com/tls" --enrollment.profile tls --csr.hosts peer1.farm.ptracing.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/farm/ca-cert.pem"
-  { set +x; } 2>/dev/null
-
-  # Copy the tls CA cert, server cert, server keystore to well known file names in the peer's tls directory that are referenced by peer startup config
-  cp "${PWD}/organizations/peerOrganizations/farm.ptracing.com/peers/peer1.farm.ptracing.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/farm.ptracing.com/peers/peer1.farm.ptracing.com/tls/ca.crt"
-  cp "${PWD}/organizations/peerOrganizations/farm.ptracing.com/peers/peer1.farm.ptracing.com/tls/signcerts/"* "${PWD}/organizations/peerOrganizations/farm.ptracing.com/peers/peer1.farm.ptracing.com/tls/server.crt"
-  cp "${PWD}/organizations/peerOrganizations/farm.ptracing.com/peers/peer1.farm.ptracing.com/tls/keystore/"* "${PWD}/organizations/peerOrganizations/farm.ptracing.com/peers/peer1.farm.ptracing.com/tls/server.key"
 
   echo "Generating the user msp"
   set -x
@@ -414,24 +392,24 @@ function createOrderer() {
 
   echo "Generating the orderer msp"
   set -x
-  fabric-ca-client enroll -u https://orderer:ordererpw@localhost:9054 --caname ca-regulatoryDepartmentOrderer -M "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatorDepartmentOrderer.ptracing.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/regulatoryDepartmentOrderer/ca-cert.pem"
+  fabric-ca-client enroll -u https://orderer:ordererpw@localhost:9054 --caname ca-regulatoryDepartmentOrderer -M "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/regulatoryDepartmentOrderer/ca-cert.pem"
   { set +x; } 2>/dev/null
 
-  cp "${PWD}/organizations/ordererOrganizations/ptracing.com/msp/config.yaml" "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatorDepartmentOrderer.ptracing.com/msp/config.yaml"
+  cp "${PWD}/organizations/ordererOrganizations/ptracing.com/msp/config.yaml" "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/msp/config.yaml"
 
   echo "Generating the orderer-tls certificates, use --csr.hosts to specify Subject Alternative Names"
   set -x
-  fabric-ca-client enroll -u https://orderer:ordererpw@localhost:9054 --caname ca-regulatoryDepartmentOrderer -M "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatorDepartmentOrderer.ptracing.com/tls" --enrollment.profile tls --csr.hosts regulatorDepartmentOrderer.ptracing.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/regulatoryDepartmentOrderer/ca-cert.pem"
+  fabric-ca-client enroll -u https://orderer:ordererpw@localhost:9054 --caname ca-regulatoryDepartmentOrderer -M "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/tls" --enrollment.profile tls --csr.hosts regulatoryDepartmentOrderer.ptracing.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/regulatoryDepartmentOrderer/ca-cert.pem"
   { set +x; } 2>/dev/null
 
   # Copy the tls CA cert, server cert, server keystore to well known file names in the orderer's tls directory that are referenced by orderer startup config
-  cp "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatorDepartmentOrderer.ptracing.com/tls/tlscacerts/"* "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatorDepartmentOrderer.ptracing.com/tls/ca.crt"
-  cp "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatorDepartmentOrderer.ptracing.com/tls/signcerts/"* "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatorDepartmentOrderer.ptracing.com/tls/server.crt"
-  cp "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatorDepartmentOrderer.ptracing.com/tls/keystore/"* "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatorDepartmentOrderer.ptracing.com/tls/server.key"
+  cp "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/tls/tlscacerts/"* "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/tls/ca.crt"
+  cp "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/tls/signcerts/"* "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/tls/server.crt"
+  cp "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/tls/keystore/"* "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/tls/server.key"
 
   # Copy orderer org's CA cert to orderer's /msp/tlscacerts directory (for use in the orderer MSP definition)
-  mkdir -p "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatorDepartmentOrderer.ptracing.com/msp/tlscacerts"
-  cp "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatorDepartmentOrderer.ptracing.com/tls/tlscacerts/"* "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatorDepartmentOrderer.ptracing.com/msp/tlscacerts/tlsca.ptracing.com-cert.pem"
+  mkdir -p "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/msp/tlscacerts"
+  cp "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/tls/tlscacerts/"* "${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/msp/tlscacerts/tlsca.ptracing.com-cert.pem"
 
   echo "Generating the admin msp"
   set -x
@@ -441,8 +419,95 @@ function createOrderer() {
   cp "${PWD}/organizations/ordererOrganizations/ptracing.com/msp/config.yaml" "${PWD}/organizations/ordererOrganizations/ptracing.com/users/Admin@ptracing.com/msp/config.yaml"
 }
 
+function createretailer() {
+  echo "Enrolling the CA admin"
+  mkdir -p organizations/peerOrganizations/retailer.ptracing.com/
+
+  export FABRIC_CA_CLIENT_HOME=${PWD}/organizations/peerOrganizations/retailer.ptracing.com/
+
+  set -x
+  fabric-ca-client enroll -u https://admin:adminpw@localhost:6054 --caname ca-retailer --tls.certfiles "${PWD}/organizations/fabric-ca/retailer/ca-cert.pem"
+  { set +x; } 2>/dev/null
+
+  echo 'NodeOUs:
+  Enable: true
+  ClientOUIdentifier:
+    Certificate: cacerts/localhost-6054-ca-retailer.pem
+    OrganizationalUnitIdentifier: client
+  PeerOUIdentifier:
+    Certificate: cacerts/localhost-6054-ca-retailer.pem
+    OrganizationalUnitIdentifier: peer
+  AdminOUIdentifier:
+    Certificate: cacerts/localhost-6054-ca-retailer.pem
+    OrganizationalUnitIdentifier: admin
+  OrdererOUIdentifier:
+    Certificate: cacerts/localhost-6054-ca-retailer.pem
+    OrganizationalUnitIdentifier: orderer' > "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/msp/config.yaml"
+
+  # Since the CA serves as both the organization CA and TLS CA, copy the org's root cert that was generated by CA startup into the org level ca and tlsca directories
+
+  # Copy retailer's CA cert to retailer's /msp/tlscacerts directory (for use in the channel MSP definition)
+  mkdir -p "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/msp/tlscacerts"
+  cp "${PWD}/organizations/fabric-ca/retailer/ca-cert.pem" "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/msp/tlscacerts/ca.crt"
+
+  # Copy retailer's CA cert to retailer's /tlsca directory (for use by clients)
+  mkdir -p "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/tlsca"
+  cp "${PWD}/organizations/fabric-ca/retailer/ca-cert.pem" "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/tlsca/tlsca.retailer.ptracing.com-cert.pem"
+
+  # Copy retailer's CA cert to retailer's /ca directory (for use by clients)
+  mkdir -p "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/ca"
+  cp "${PWD}/organizations/fabric-ca/retailer/ca-cert.pem" "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/ca/ca.retailer.ptracing.com-cert.pem"
+
+  echo "Registering peer0"
+  set -x
+  fabric-ca-client register --caname ca-retailer --id.name peer0 --id.secret peer0pw --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/retailer/ca-cert.pem"
+  { set +x; } 2>/dev/null
+
+  echo "Registering user"
+  set -x
+  fabric-ca-client register --caname ca-retailer --id.name user1 --id.secret user1pw --id.type client --tls.certfiles "${PWD}/organizations/fabric-ca/retailer/ca-cert.pem"
+  { set +x; } 2>/dev/null
+
+  echo "Registering the org admin"
+  set -x
+  fabric-ca-client register --caname ca-retailer --id.name retaileradmin --id.secret retaileradminpw --id.type admin --tls.certfiles "${PWD}/organizations/fabric-ca/retailer/ca-cert.pem"
+  { set +x; } 2>/dev/null
+
+  echo "Generating the peer0 msp"
+  set -x
+  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:6054 --caname ca-retailer -M "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/peers/peer0.retailer.ptracing.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/retailer/ca-cert.pem"
+  { set +x; } 2>/dev/null
+
+  cp "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/peers/peer0.retailer.ptracing.com/msp/config.yaml"
+
+  echo "Generating the peer0-tls certificates, use --csr.hosts to specify Subject Alternative Names"
+  set -x
+  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:6054 --caname ca-retailer -M "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/peers/peer0.retailer.ptracing.com/tls" --enrollment.profile tls --csr.hosts peer0.retailer.ptracing.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/retailer/ca-cert.pem"
+  { set +x; } 2>/dev/null
+
+  # Copy the tls CA cert, server cert, server keystore to well known file names in the peer's tls directory that are referenced by peer startup config
+  cp "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/peers/peer0.retailer.ptracing.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/peers/peer0.retailer.ptracing.com/tls/ca.crt"
+  cp "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/peers/peer0.retailer.ptracing.com/tls/signcerts/"* "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/peers/peer0.retailer.ptracing.com/tls/server.crt"
+  cp "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/peers/peer0.retailer.ptracing.com/tls/keystore/"* "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/peers/peer0.retailer.ptracing.com/tls/server.key"
+
+  echo "Generating the user msp"
+  set -x
+  fabric-ca-client enroll -u https://user1:user1pw@localhost:6054 --caname ca-retailer -M "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/users/User1@retailer.ptracing.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/retailer/ca-cert.pem"
+  { set +x; } 2>/dev/null
+
+  cp "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/users/User1@retailer.ptracing.com/msp/config.yaml"
+
+  echo "Generating the org admin msp"
+  set -x
+  fabric-ca-client enroll -u https://retaileradmin:retaileradminpw@localhost:6054 --caname ca-retailer -M "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/users/Admin@retailer.ptracing.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/retailer/ca-cert.pem"
+  { set +x; } 2>/dev/null
+
+  cp "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/retailer.ptracing.com/users/Admin@retailer.ptracing.com/msp/config.yaml"
+}
+
 createregulatoryDepartment
 createfarm
 createprocessor
+createretailer
 createdistributor
 createOrderer

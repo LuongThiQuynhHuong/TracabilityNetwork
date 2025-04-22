@@ -1,10 +1,10 @@
 version: '3.7'
 
 volumes:
-  regulatorDepartmentOrderer.ptracing.com:
+  regulatoryDepartmentOrderer.ptracing.com:
   peer0.regulatoryDepartment.ptracing.com:
   peer0.farm.ptracing.com:
-  peer1.farm.ptracing.com:
+  peer0.retailer.ptracing.com:
   peer0.processor.ptracing.com:
   peer0.distributor.ptracing.com:
 
@@ -16,8 +16,8 @@ networks:
 
 services:
 
-  regulatorDepartmentOrderer.ptracing.com:
-    container_name: regulatorDepartmentOrderer.ptracing.com
+  regulatoryDepartmentOrderer.ptracing.com:
+    container_name: regulatoryDepartmentOrderer.ptracing.com
     image: hyperledger/fabric-orderer:latest
     labels:
       service: hyperledger-fabric
@@ -43,14 +43,14 @@ services:
       - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
       - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
       - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:7053
-      - ORDERER_OPERATIONS_LISTENADDRESS=regulatorDepartmentOrderer.ptracing.com:9443
+      - ORDERER_OPERATIONS_LISTENADDRESS=regulatoryDepartmentOrderer.ptracing.com:9443
       - ORDERER_METRICS_PROVIDER=prometheus
     working_dir: /root
     command: orderer
     volumes:
-      - ../organizations/ordererOrganizations/ptracing.com/orderers/regulatorDepartmentOrderer.ptracing.com/msp:/var/hyperledger/orderer/msp
-      - ../organizations/ordererOrganizations/ptracing.com/orderers/regulatorDepartmentOrderer.ptracing.com/tls/:/var/hyperledger/orderer/tls
-      - regulatorDepartmentOrderer.ptracing.com:/var/hyperledger/production/orderer
+      - ../organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/msp:/var/hyperledger/orderer/msp
+      - ../organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/tls/:/var/hyperledger/orderer/tls
+      - regulatoryDepartmentOrderer.ptracing.com:/var/hyperledger/production/orderer
     ports:
       - 7050:7050
       - 7053:7053
@@ -189,12 +189,12 @@ services:
       - COUCHDB_USER=admin
       - COUCHDB_PASSWORD=adminpw
     ports:
-      - "5986:5984"
+      - "6984:5984"
     networks:
       - test
 
-  peer1.farm.ptracing.com:  # Added peer1 for farm organization
-    container_name: peer1.farm.ptracing.com
+  peer0.retailer.ptracing.com:
+    container_name: peer0.retailer.ptracing.com
     image: hyperledger/fabric-peer:latest
     labels:
       service: hyperledger-fabric
@@ -208,29 +208,34 @@ services:
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
       # Peer specific variables
-      - CORE_PEER_ID=peer1.farm.ptracing.com
-      - CORE_PEER_ADDRESS=peer1.farm.ptracing.com:9053
-      - CORE_PEER_LISTENADDRESS=0.0.0.0:9053
-      - CORE_PEER_CHAINCODEADDRESS=peer1.farm.ptracing.com:9054
-      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9054
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.farm.ptracing.com:9053
-      - CORE_PEER_LOCALMSPID=farmMSP
+      - CORE_PEER_ID=peer0.retailer.ptracing.com
+      - CORE_PEER_ADDRESS=peer0.retailer.ptracing.com:10051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:10051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.retailer.ptracing.com:10052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:10052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.retailer.ptracing.com:10051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.retailer.ptracing.com:10051
+      - CORE_PEER_LOCALMSPID=retailerMSP
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
-      - CORE_OPERATIONS_LISTENADDRESS=peer1.farm.ptracing.com:9445
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.retailer.ptracing.com:9448
       - CORE_METRICS_PROVIDER=prometheus
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0retailer"}
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb4:5984
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
-      - ../organizations/peerOrganizations/farm.ptracing.com/peers/peer1.farm.ptracing.com:/etc/hyperledger/fabric
-      - peer1.farm.ptracing.com:/var/hyperledger/production
+      - ../organizations/peerOrganizations/retailer.ptracing.com/peers/peer0.retailer.ptracing.com:/etc/hyperledger/fabric
+      - peer0.retailer.ptracing.com:/var/hyperledger/production
     depends_on:
       - couchdb4
+    working_dir: /root
+    command: peer node start
     ports:
-      - 9053:9053
-      - 9441:9441
+      - 10051:10051
+      - 9448:9448
     networks:
       - test
 
@@ -376,7 +381,7 @@ services:
       - peer0.regulatoryDepartment.ptracing.com
       - peer0.processor.ptracing.com
       - peer0.farm.ptracing.com
-      - peer1.farm.ptracing.com
+      - peer0.retailer.ptracing.com
       - peer0.distributor.ptracing.com
     networks:
       - test

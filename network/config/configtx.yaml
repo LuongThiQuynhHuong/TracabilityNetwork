@@ -14,7 +14,7 @@ Organizations:
         Type: Signature
         Rule: "OR('RegulatoryDepartmentOrdererMSP.admin')"
     OrdererEndpoints:
-      - regulatorDepartmentOrderer.ptracing.com:7050
+      - regulatoryDepartmentOrderer.ptracing.com:7050
 
   - &regulatoryDepartment
     Name: regulatoryDepartmentMSP
@@ -70,6 +70,24 @@ Organizations:
         Type: Signature
         Rule: "OR('processorMSP.peer')"
 
+  - &retailer
+    Name: retailerMSP
+    ID: retailerMSP
+    MSPDir: ../organizations/peerOrganizations/retailer.ptracing.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('retailerMSP.admin', 'retailerMSP.peer', 'retailerMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('retailerMSP.admin', 'retailerMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('retailerMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('retailerMSP.peer')"
+
   - &distributor
     Name: distributorMSP
     ID: distributorMSP
@@ -120,7 +138,7 @@ Application: &ApplicationDefaults
 
 Orderer: &OrdererDefaults
   Addresses:
-    - regulatorDepartmentOrderer.ptracing.com:7050
+    - regulatoryDepartmentOrderer.ptracing.com:7050
   BatchTimeout: 2s
   BatchSize:
     MaxMessageCount: 10
@@ -163,10 +181,10 @@ Profiles:
       OrdererType: etcdraft
       EtcdRaft:
         Consenters:
-          - Host: regulatorDepartmentOrderer.ptracing.com
+          - Host: regulatoryDepartmentOrderer.ptracing.com
             Port: 7050
-            ClientTLSCert: ../organizations/ordererOrganizations/ptracing.com/orderers/regulatorDepartmentOrderer.ptracing.com/tls/server.crt
-            ServerTLSCert: ../organizations/ordererOrganizations/ptracing.com/orderers/regulatorDepartmentOrderer.ptracing.com/tls/server.crt
+            ClientTLSCert: ../organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/tls/server.crt
+            ServerTLSCert: ../organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/tls/server.crt
       Organizations:
         - *RegulatoryDepartmentOrderer
       Capabilities: *OrdererCapabilities
@@ -177,4 +195,5 @@ Profiles:
         - *processor
         - *farm
         - *distributor
+        - *retailer
       Capabilities: *ApplicationCapabilities
