@@ -12,6 +12,8 @@
   "dependencies": {
     "bootstrap": "^5.3.3",
     "date-fns": "^4.1.0",
+    "path": "^0.12.7",
+    "path-browserify": "^1.0.1",
     "qrcode.react": "^4.2.0",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.9",
@@ -22,6 +24,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "@types/node": "^22.14.1",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
