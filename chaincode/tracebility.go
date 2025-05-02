@@ -378,29 +378,26 @@ func ReadAsset[T OrganizationRole | Organization | FarmProduct | ProductType | P
 	return &asset, nil
 }
 
-func (s *SmartContract) GetPackageHistory(ctx contractapi.TransactionContextInterface, packageKey string) ([]*PackageHistory, string, error) {
+func (s *SmartContract) GetPackageHistory(ctx contractapi.TransactionContextInterface, packageKey string) ([]*PackageHistory, error) {
 	resultsIterator, err := ctx.GetStub().GetHistoryForKey(packageKey)
 	if err != nil {
-		return nil, "", err
+		return nil, err
 	}
 	defer resultsIterator.Close()
 
 	var records []*PackageHistory
-	var rawProductKey string = ""
 	for resultsIterator.HasNext() {
 		response, err := resultsIterator.Next()
 		if err != nil {
-			return nil, "", err
+			return nil, err
 		}
 
 		var pkg Package
 		if len(response.Value) > 0 {
 			err = json.Unmarshal(response.Value, &pkg)
 			if err != nil {
-				return nil, "", err
+				return nil, err
 			}
-
-			rawProductKey = pkg.RawProductID
 		} else {
 			pkg = Package{
 				ID: packageKey,
@@ -416,7 +413,7 @@ func (s *SmartContract) GetPackageHistory(ctx contractapi.TransactionContextInte
 		records = append(records, &record)
 	}
 
-	return records, rawProductKey, nil
+	return records, nil
 }
 
 func (s *SmartContract) GetFarmProductHistory(ctx contractapi.TransactionContextInterface, farmProductKey string) ([]*RawProductHistory, error) {
@@ -1025,9 +1022,15 @@ func (s *SmartContract) UpdatePackageStatus(ctx contractapi.TransactionContextIn
 func (s *SmartContract) TraceProvenance(ctx contractapi.TransactionContextInterface, packageKey string) (*CombinedHistory, error) {
 	// Retrieve package history using the package ID
 	packageKey = GetKey(Package{}, packageKey)
-	packageHistory, rawProductKey, err := s.GetPackageHistory(ctx, packageKey)
+	packageHistory, err := s.GetPackageHistory(ctx, packageKey)
 	if err != nil {
 		return nil, err
+	}
+
+	// Get raw product key from the package history (you can extract it from the first package, for example)
+	var rawProductKey string
+	if len(packageHistory) > 0 {
+		rawProductKey = packageHistory[0].Record.RawProductID // Assume the first record contains the raw product key
 	}
 
 	// Prepare to retrieve the raw product history if a RawProductID is present.

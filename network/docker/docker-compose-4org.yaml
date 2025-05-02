@@ -98,7 +98,7 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
       - CORE_OPERATIONS_LISTENADDRESS=peer0.regulatoryDepartment.ptracing.com:9444
       - CORE_METRICS_PROVIDER=prometheus
-      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0regulatoryDepartment"}
+      # - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0regulatoryDepartment"}
       - CORE_CHAINCODE_EXECUTETIMEOUT=300s
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
@@ -107,6 +107,7 @@ services:
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
       - ../organizations/peerOrganizations/regulatoryDepartment.ptracing.com/peers/peer0.regulatoryDepartment.ptracing.com:/etc/hyperledger/fabric
+      - ../peercfg/core.yaml:/etc/hyperledger/fabric/core.yaml
       - peer0.regulatoryDepartment.ptracing.com:/var/hyperledger/production
     working_dir: /root
     command: peer node start
@@ -160,7 +161,7 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
       - CORE_OPERATIONS_LISTENADDRESS=peer0.farm.ptracing.com:9445
       - CORE_METRICS_PROVIDER=prometheus
-      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0farm"}
+      # - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0farm"}
       - CORE_CHAINCODE_EXECUTETIMEOUT=300s
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1:5984
@@ -169,6 +170,7 @@ services:
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
       - ../organizations/peerOrganizations/farm.ptracing.com/peers/peer0.farm.ptracing.com:/etc/hyperledger/fabric
+      - ../peercfg/core.yaml:/etc/hyperledger/fabric/core.yaml
       - peer0.farm.ptracing.com:/var/hyperledger/production
     working_dir: /root
     command: peer node start
@@ -219,7 +221,7 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
       - CORE_OPERATIONS_LISTENADDRESS=peer0.retailer.ptracing.com:9448
       - CORE_METRICS_PROVIDER=prometheus
-      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0retailer"}
+      # - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0retailer"}
       - CORE_CHAINCODE_EXECUTETIMEOUT=300s
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb4:5984
@@ -228,6 +230,7 @@ services:
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
       - ../organizations/peerOrganizations/retailer.ptracing.com/peers/peer0.retailer.ptracing.com:/etc/hyperledger/fabric
+      - ../peercfg/core.yaml:/etc/hyperledger/fabric/core.yaml
       - peer0.retailer.ptracing.com:/var/hyperledger/production
     depends_on:
       - couchdb4
@@ -278,7 +281,7 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
       - CORE_OPERATIONS_LISTENADDRESS=peer0.processor.ptracing.com:9447
       - CORE_METRICS_PROVIDER=prometheus
-      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0processor"}
+      # - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0processor"}
       - CORE_CHAINCODE_EXECUTETIMEOUT=300s
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb2:5984
@@ -287,6 +290,7 @@ services:
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock
       - ../organizations/peerOrganizations/processor.ptracing.com/peers/peer0.processor.ptracing.com:/etc/hyperledger/fabric
+      - ../peercfg/core.yaml:/etc/hyperledger/fabric/core.yaml
       - peer0.processor.ptracing.com:/var/hyperledger/production
     depends_on:
       - couchdb2
@@ -317,7 +321,7 @@ services:
     labels:
       service: hyperledger-fabric
     environment:
-      # - FABRIC_CFG_PATH=/etc/hyperledger/peercfg
+      # - FABRIC_CFG_PATH=/etc/hyperledger/fabric
       #Generic peer variables
       - FABRIC_LOGGING_SPEC=INFO
       #- FABRIC_LOGGING_SPEC=DEBUG
@@ -340,7 +344,7 @@ services:
       - CORE_PEER_LOCALMSPID=distributorMSP
       - CORE_OPERATIONS_LISTENADDRESS=peer0.distributor.ptracing.com:9446
       - CORE_METRICS_PROVIDER=prometheus
-      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0distributor"}
+      # - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0distributor"}
       - CORE_CHAINCODE_EXECUTETIMEOUT=300s  
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb3:5984
@@ -351,6 +355,7 @@ services:
     volumes:
       - /var/run/docker.sock:/host/var/run/docker.sock      
       - ../organizations/peerOrganizations/distributor.ptracing.com/peers/peer0.distributor.ptracing.com:/etc/hyperledger/fabric        
+      - ../peercfg/core.yaml:/etc/hyperledger/fabric/core.yaml
       - peer0.distributor.ptracing.com:/var/hyperledger/production
     working_dir: /root
     command: peer node start

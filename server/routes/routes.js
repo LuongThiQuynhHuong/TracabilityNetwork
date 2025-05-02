@@ -3,6 +3,7 @@ const fs = require('fs');
 const { clientApplication } = require("./client");
 
 const constants = require("../utils/contants")
+const { formatGrpcErrorMessage } = require('../utils/formatError');
 
 const router = express.Router();
 const userClient = new clientApplication();
@@ -39,13 +40,14 @@ router.post(constants.API_ENDPOINT.ADD_NEW_ORG, async (req, res) => {
       });
   } catch (error) {
     console.error("Error adding organization:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error adding organization!",
-        data: { error: error.message },
-      });
+
+    const errorMessage = formatGrpcErrorMessage(error, "Error adding organization!");
+
+    res.status(500).json({
+      success: false,
+      message: errorMessage,
+      data: { error: error.message },
+    });
   }
 });
 
@@ -83,13 +85,14 @@ router.post(constants.API_ENDPOINT.REGISTER_ORG_ROLE, async (req, res) => {
       });
   } catch (error) {
     console.error("Error registering organization role:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error registering organization role!",
-        data: { error: error.message },
-      });
+
+    const errorMessage = formatGrpcErrorMessage(error, "Error registering organization role!");
+
+    res.status(500).json({
+      success: false,
+      message: errorMessage,
+      data: { error: error.message },
+    });
   }
 });
 
@@ -126,13 +129,14 @@ router.post(constants.API_ENDPOINT.ADD_FARM_PRODUCT, async (req, res) => {
       });
   } catch (error) {
     console.error("Error adding farm product:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error adding farm product!",
-        data: { error: error.message },
-      });
+
+    const errorMessage = formatGrpcErrorMessage(error, "Error adding farm product!");
+
+    res.status(500).json({
+      success: false,
+      message: errorMessage,
+      data: { error: error.message },
+    });
   }
 });
 
@@ -170,13 +174,13 @@ router.post(constants.API_ENDPOINT.UPDATE_FARM_PRODUCT_STATUS, async (req, res) 
       });
   } catch (error) {
     console.error("Error updating farm product status:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error updating farm product status!",
-        data: { error: error.message },
-      });
+    const errorMessage = formatGrpcErrorMessage(error, "Error updating farm product status!");
+
+    res.status(500).json({
+      success: false,
+      message: errorMessage,
+      data: { error: error.message },
+    });
   }
 });
 
@@ -214,13 +218,14 @@ router.post(constants.API_ENDPOINT.TRANSFER_FARM_PRODUCT, async (req, res) => {
       });
   } catch (error) {
     console.error("Error transfering farm product:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error transfering farm product!",
-        data: { error: error.message },
-      });
+
+    const errorMessage = formatGrpcErrorMessage(error, "Error transfering farm product!");
+
+    res.status(500).json({
+      success: false,
+      message: errorMessage,
+      data: { error: error.message },
+    });
   }
 });
 
@@ -257,13 +262,14 @@ router.post(constants.API_ENDPOINT.REGISTER_PRODUCT_TYPE, async (req, res) => {
       });
   } catch (error) {
     console.error("Error sending register product type request:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error sending register product type request!",
-        data: { error: error.message },
-      });
+
+    const errorMessage = formatGrpcErrorMessage(error, "Error sending register product type request!");
+
+    res.status(500).json({
+      success: false,
+      message: errorMessage,
+      data: { error: error.message },
+    });
   }
 });
 
@@ -301,13 +307,14 @@ router.post(constants.API_ENDPOINT.APPROVE_PRODUCT_TYPE, async (req, res) => {
       });
   } catch (error) {
     console.error(isApproved ? "Error approving product type request:" : "Error rejecting product type request:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: isApproved ? "Error approving product type request!" : "Error rejecting product type request!",
-        data: { error: error.message },
-      });
+
+    const errorMessage = formatGrpcErrorMessage(error, isApproved ? "Error approving product type request!" : "Error rejecting product type request!");
+
+    res.status(500).json({
+      success: false,
+      message: errorMessage,
+      data: { error: error.message },
+    });
   }
 });
 
@@ -347,13 +354,14 @@ router.post(constants.API_ENDPOINT.ADD_PACKAGE, async (req, res) => {
       });
   } catch (error) {
     console.error("Error adding package request:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error adding package request!",
-        data: { error: error.message },
-      });
+
+    const errorMessage = formatGrpcErrorMessage(error, "Error adding package request!");
+
+    res.status(500).json({
+      success: false,
+      message: errorMessage,
+      data: { error: error.message },
+    });
   }
 });
 
@@ -394,13 +402,14 @@ router.post(constants.API_ENDPOINT.ADD_SHIPMENT, async (req, res) => {
       });
   } catch (error) {
     console.error("Error adding shipment request:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error adding shipment request!",
-        data: { error: error.message },
-      });
+
+    const errorMessage = formatGrpcErrorMessage(error, "Error adding shipment request!");
+
+    res.status(500).json({
+      success: false,
+      message: errorMessage,
+      data: { error: error.message },
+    });
   }
 });
 
@@ -438,13 +447,14 @@ router.post(constants.API_ENDPOINT.START_SHIPMENT, async (req, res) => {
       });
   } catch (error) {
     console.error("Error starting shipment request:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error starting shipment request!",
-        data: { error: error.message },
-      });
+
+    const errorMessage = formatGrpcErrorMessage(error, "Error starting shipment request!");
+
+    res.status(500).json({
+      success: false,
+      message: errorMessage,
+      data: { error: error.message },
+    });
   }
 });
 
@@ -482,13 +492,14 @@ router.post(constants.API_ENDPOINT.TRANSFER_PACKAGE, async (req, res) => {
       });
   } catch (error) {
     console.error("Error transfering package request:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error transfering package request!",
-        data: { error: error.message },
-      });
+
+    const errorMessage = formatGrpcErrorMessage(error, "Error transfering package request!");
+
+    res.status(500).json({
+      success: false,
+      message: errorMessage,
+      data: { error: error.message },
+    });
   }
 });
 
@@ -525,13 +536,14 @@ router.post(constants.API_ENDPOINT.END_SHIPMENT, async (req, res) => {
       });
   } catch (error) {
     console.error("Error finishing shipment request:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error finishing shipment request!",
-        data: { error: error.message },
-      });
+
+    const errorMessage = formatGrpcErrorMessage(error, "Error finishing shipment request!");
+
+    res.status(500).json({
+      success: false,
+      message: errorMessage,
+      data: { error: error.message },
+    });
   }
 });
 
@@ -569,13 +581,14 @@ router.post(constants.API_ENDPOINT.UPDATE_PACKAGE_STATUS, async (req, res) => {
       });
   } catch (error) {
     console.error("Error updating package status request:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error updating package status request!",
-        data: { error: error.message },
-      });
+
+    const errorMessage = formatGrpcErrorMessage(error, "Error updating package status request!");
+
+    res.status(500).json({
+      success: false,
+      message: errorMessage,
+      data: { error: error.message },
+    });
   }
 });
 
@@ -611,13 +624,14 @@ router.post(constants.API_ENDPOINT.TRACE_PROVENANCE, async (req, res) => {
       });
   } catch (error) {
     console.error("Error tracing provenance request:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error tracing provenance request!",
-        data: { error: error.message },
-      });
+
+    const errorMessage = formatGrpcErrorMessage(error, "Error tracing provenance request!");
+
+    res.status(500).json({
+      success: false,
+      message: errorMessage,
+      data: { error: error.message },
+    });
   }
 });
 
