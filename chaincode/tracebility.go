@@ -1,9 +1,7 @@
 package main
 
 import (
-	"crypto/x509"
 	"encoding/json"
-	"encoding/pem"
 	"fmt"
 	"log"
 	"math/rand"
@@ -277,33 +275,6 @@ func ToCamelCase(name string) string {
 	return camel
 }
 
-func GetOrganizationName(ctx contractapi.TransactionContextInterface) (string, error) {
-	// Get the creator's certificate (PEM-encoded)
-	creatorBytes, err := ctx.GetStub().GetCreator()
-	if err != nil {
-		return "", fmt.Errorf("failed to get creator: %v", err)
-	}
-
-	// Decode the PEM-encoded certificate
-	block, _ := pem.Decode(creatorBytes)
-	if block == nil {
-		return "", fmt.Errorf("failed to decode PEM block containing the certificate")
-	}
-
-	// Parse the X.509 certificate
-	cert, err := x509.ParseCertificate(block.Bytes)
-	if err != nil {
-		return "", fmt.Errorf("failed to parse certificate: %v", err)
-	}
-
-	// Extract the Organization (O) part from the Subject field then return the first organization found
-	for _, org := range cert.Subject.Organization {
-		return org, nil
-	}
-
-	return "", fmt.Errorf("organization not found in certificate")
-}
-
 func GetKey(structInstance any, assetID string) string {
 	structName := reflect.TypeOf(structInstance).Name()
 	structName = strings.ToLower(structName[:1]) + structName[1:]
@@ -342,15 +313,6 @@ func GetQueryResultForQueryString(ctx contractapi.TransactionContextInterface, q
 	defer resultsIterator.Close()
 
 	return resultsIterator, nil
-}
-
-func GetRequestingOrgKey(ctx contractapi.TransactionContextInterface) (string, error) {
-	orgName, err := GetOrganizationName(ctx)
-	if err != nil {
-		return "", err
-	}
-
-	return GetKey(Organization{}, orgName), err
 }
 
 // check if orgKey has role
@@ -508,12 +470,9 @@ func (s *SmartContract) AssetExists(ctx contractapi.TransactionContextInterface,
 }
 
 // CALLED WHEN JOIN CHANNEL
-func (s *SmartContract) AddNewOrganization(ctx contractapi.TransactionContextInterface) error {
+func (s *SmartContract) AddNewOrganization(ctx contractapi.TransactionContextInterface, requestingOrg string) error {
 
-	orgKey, err := GetRequestingOrgKey(ctx)
-	if err != nil {
-		return err
-	}
+	orgKey := GetKey(Organization{}, requestingOrg)
 
 	isExisted, err := s.AssetExists(ctx, orgKey)
 	if err != nil {
@@ -545,16 +504,13 @@ func (s *SmartContract) AddNewOrganization(ctx contractapi.TransactionContextInt
 	return nil
 }
 
-func (s *SmartContract) RegisterOrgRole(ctx contractapi.TransactionContextInterface, role, orgKey string) error {
+func (s *SmartContract) RegisterOrgRole(ctx contractapi.TransactionContextInterface, requestingOrg string, role, orgKey string) error {
 	registeredRoleType, err := GetOrgRoleType(role)
 	if err != nil {
 		return err
 	}
 
-	registerOrgKey, err := GetRequestingOrgKey(ctx)
-	if err != nil {
-		return err
-	}
+	registerOrgKey := GetKey(Organization{}, requestingOrg)
 
 	isExistedOrg, err := s.AssetExists(ctx, registerOrgKey)
 	if err != nil {
@@ -616,11 +572,8 @@ func (s *SmartContract) RegisterOrgRole(ctx contractapi.TransactionContextInterf
 	return nil
 }
 
-func (s *SmartContract) AddFarmProduct(ctx contractapi.TransactionContextInterface, name string) error {
-	requestingOrgKey, err := GetRequestingOrgKey(ctx)
-	if err != nil {
-		return err
-	}
+func (s *SmartContract) AddFarmProduct(ctx contractapi.TransactionContextInterface, requestingOrg string, name string) error {
+	requestingOrgKey := GetKey(Organization{}, requestingOrg)
 
 	isFarmer, err := CheckOrgRole(ctx, requestingOrgKey, Farm.String())
 	if err != nil {
@@ -655,7 +608,7 @@ func (s *SmartContract) AddFarmProduct(ctx contractapi.TransactionContextInterfa
 	return nil
 }
 
-func (s *SmartContract) UpdateFarmProductStatus(ctx contractapi.TransactionContextInterface, farmProductKey, newStatus string) error {
+func (s *SmartContract) UpdateFarmProductStatus(ctx contractapi.TransactionContextInterface, requestingOrg string, farmProductKey, newStatus string) error {
 	farmProductKey = GetKey(FarmProduct{}, farmProductKey)
 	farmProduct, err := ReadAsset[FarmProduct](ctx, farmProductKey)
 	if err != nil {
@@ -677,10 +630,7 @@ func (s *SmartContract) UpdateFarmProductStatus(ctx contractapi.TransactionConte
 	}
 
 	//check current owner
-	requestingOrgKey, err := GetRequestingOrgKey(ctx)
-	if err != nil {
-		return err
-	}
+	requestingOrgKey := GetKey(Organization{}, requestingOrg)
 	if farmProduct.CurrentOwnerOrgID != requestingOrgKey {
 		return fmt.Errorf("only the current owner can update the farm product status")
 	}
@@ -701,7 +651,7 @@ func (s *SmartContract) UpdateFarmProductStatus(ctx contractapi.TransactionConte
 	return nil
 }
 
-func (s *SmartContract) TransferFarmProduct(ctx contractapi.TransactionContextInterface, farmProductKey, newOrgKey string) error {
+func (s *SmartContract) TransferFarmProduct(ctx contractapi.TransactionContextInterface, requestingOrg string, farmProductKey, newOrgKey string) error {
 	farmProductKey = GetKey(FarmProduct{}, farmProductKey)
 	farmProduct, err := ReadAsset[FarmProduct](ctx, farmProductKey)
 	if err != nil {
@@ -709,10 +659,7 @@ func (s *SmartContract) TransferFarmProduct(ctx contractapi.TransactionContextIn
 	}
 
 	//check current owner
-	requestingOrgKey, err := GetRequestingOrgKey(ctx)
-	if err != nil {
-		return err
-	}
+	requestingOrgKey := GetKey(Organization{}, requestingOrg)
 	if farmProduct.CurrentOwnerOrgID != requestingOrgKey {
 		return fmt.Errorf("only the current owner can initiate a transfer")
 	}
@@ -735,11 +682,8 @@ func (s *SmartContract) TransferFarmProduct(ctx contractapi.TransactionContextIn
 	return nil
 }
 
-func (s *SmartContract) RegisterProductType(ctx contractapi.TransactionContextInterface, name string) error {
-	requestingOrgKey, err := GetRequestingOrgKey(ctx)
-	if err != nil {
-		return err
-	}
+func (s *SmartContract) RegisterProductType(ctx contractapi.TransactionContextInterface, requestingOrg string, name string) error {
+	requestingOrgKey := GetKey(Organization{}, requestingOrg)
 	isProcessor, err := CheckOrgRole(ctx, requestingOrgKey, Processor.String())
 	if err != nil {
 		return err
@@ -785,11 +729,8 @@ func (s *SmartContract) RegisterProductType(ctx contractapi.TransactionContextIn
 	return nil
 }
 
-func (s *SmartContract) ApproveProductType(ctx contractapi.TransactionContextInterface, productTypeKey string, isApproved bool) error {
-	requestingOrgKey, err := GetRequestingOrgKey(ctx)
-	if err != nil {
-		return err
-	}
+func (s *SmartContract) ApproveProductType(ctx contractapi.TransactionContextInterface, requestingOrg string, productTypeKey string, isApproved bool) error {
+	requestingOrgKey := GetKey(Organization{}, requestingOrg)
 	isRegulatoryDepartment, err := CheckOrgRole(ctx, requestingOrgKey, RegulatoryDepartment.String())
 	if err != nil {
 		return err
@@ -825,16 +766,13 @@ func (s *SmartContract) ApproveProductType(ctx contractapi.TransactionContextInt
 	return nil
 }
 
-func (s *SmartContract) AddPackage(ctx contractapi.TransactionContextInterface, rawProductKey, productTypeKey, packagedDateTime string, weight float64) error {
+func (s *SmartContract) AddPackage(ctx contractapi.TransactionContextInterface, requestingOrg string, rawProductKey, productTypeKey, packagedDateTime string, weight float64) error {
 	_, err := ValidateDateTime(packagedDateTime)
 	if err != nil {
 		return err
 	}
 	//check role
-	requestingOrgKey, err := GetRequestingOrgKey(ctx)
-	if err != nil {
-		return err
-	}
+	requestingOrgKey := GetKey(Organization{}, requestingOrg)
 	isProcessor, err := CheckOrgRole(ctx, requestingOrgKey, Processor.String())
 	if err != nil {
 		return err
@@ -887,16 +825,13 @@ func (s *SmartContract) AddPackage(ctx contractapi.TransactionContextInterface, 
 	return nil
 }
 
-func (s *SmartContract) AddShipment(ctx contractapi.TransactionContextInterface, fromAddress, destinationAddress, startTime, processorOrgKey, retailerOrgKey string) error {
+func (s *SmartContract) AddShipment(ctx contractapi.TransactionContextInterface, requestingOrg string, fromAddress, destinationAddress, startTime, processorOrgKey, retailerOrgKey string) error {
 	_, err := ValidateDateTime(startTime)
 	if err != nil {
 		return err
 	}
 	//check requester role
-	requestingOrgKey, err := GetRequestingOrgKey(ctx)
-	if err != nil {
-		return err
-	}
+	requestingOrgKey := GetKey(Organization{}, requestingOrg)
 	isDistributor, err := CheckOrgRole(ctx, requestingOrgKey, Distributor.String())
 	if err != nil {
 		return err
@@ -950,11 +885,9 @@ func (s *SmartContract) AddShipment(ctx contractapi.TransactionContextInterface,
 }
 
 // change UpdatePackageOnShipment -> StartShipment
-func (s *SmartContract) StartShipment(ctx contractapi.TransactionContextInterface, shipmentKey, packageKey string) error {
-	requestingOrgKey, err := GetRequestingOrgKey(ctx)
-	if err != nil {
-		return err
-	}
+func (s *SmartContract) StartShipment(ctx contractapi.TransactionContextInterface, requestingOrg string, shipmentKey, packageKey string) error {
+	requestingOrgKey := GetKey(Organization{}, requestingOrg)
+
 	// check shipment
 	shipmentKey = GetKey(Shipment{}, shipmentKey)
 	shipment, err := ReadAsset[Shipment](ctx, shipmentKey)
@@ -998,17 +931,14 @@ func (s *SmartContract) StartShipment(ctx contractapi.TransactionContextInterfac
 	return nil
 }
 
-func (s *SmartContract) TransferPackage(ctx contractapi.TransactionContextInterface, packageKey, newOrgKey string) error {
+func (s *SmartContract) TransferPackage(ctx contractapi.TransactionContextInterface, requestingOrg string, packageKey, newOrgKey string) error {
 	packageKey = GetKey(Package{}, packageKey)
 	transferedPackage, err := ReadAsset[Package](ctx, packageKey)
 	if err != nil {
 		return err
 	}
 	//check current owner
-	requestingOrgKey, err := GetRequestingOrgKey(ctx)
-	if err != nil {
-		return err
-	}
+	requestingOrgKey := GetKey(Organization{}, requestingOrg)
 	if transferedPackage.CurrentOwnerOrgID != requestingOrgKey {
 		return fmt.Errorf("only the current owner can initiate a transfer")
 	}
@@ -1031,16 +961,13 @@ func (s *SmartContract) TransferPackage(ctx contractapi.TransactionContextInterf
 	return nil
 }
 
-func (s *SmartContract) EndShipment(ctx contractapi.TransactionContextInterface, shipmentKey string) error {
+func (s *SmartContract) EndShipment(ctx contractapi.TransactionContextInterface, requestingOrg string, shipmentKey string) error {
 	shipmentKey = GetKey(Shipment{}, shipmentKey)
 	shipment, err := ReadAsset[Shipment](ctx, shipmentKey)
 	if err != nil {
 		return err
 	}
-	requestingOrgKey, err := GetRequestingOrgKey(ctx)
-	if err != nil {
-		return err
-	}
+	requestingOrgKey := GetKey(Organization{}, requestingOrg)
 
 	if shipment.Status != InTransit.String() || shipment.DistributorOrgID != requestingOrgKey {
 		return fmt.Errorf("shipment must be InTransit and initiated by you")
@@ -1062,7 +989,7 @@ func (s *SmartContract) EndShipment(ctx contractapi.TransactionContextInterface,
 	return nil
 }
 
-func (s *SmartContract) UpdatePackageStatus(ctx contractapi.TransactionContextInterface, packageKey, status string) error {
+func (s *SmartContract) UpdatePackageStatus(ctx contractapi.TransactionContextInterface, requestingOrg string, packageKey, status string) error {
 	packageKey = GetKey(Package{}, packageKey)
 	updatedPackage, err := ReadAsset[Package](ctx, packageKey)
 	if err != nil {
@@ -1074,10 +1001,7 @@ func (s *SmartContract) UpdatePackageStatus(ctx contractapi.TransactionContextIn
 		return err
 	}
 
-	requestingOrgKey, err := GetRequestingOrgKey(ctx)
-	if err != nil {
-		return err
-	}
+	requestingOrgKey := GetKey(Organization{}, requestingOrg)
 
 	if updatedPackage.CurrentOwnerOrgID != requestingOrgKey {
 		return fmt.Errorf("only the current owner can update the package status")
