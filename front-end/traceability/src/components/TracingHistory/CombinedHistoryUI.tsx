@@ -10,69 +10,87 @@ const CombinedHistoryUI: React.FC<CombinedHistoryUIProps> = ({ packageId, histor
   console.log('CombinedHistoryUI', history);
   return (
     <Container>
-      <h1 style={{ paddingTop: "20px", textAlign: "center" }}>Package History for ID '{packageId}'</h1>
+      <h1 style={{ paddingTop: "20px", textAlign: "center" }}>
+        Package History for ID '{packageId}'
+      </h1>
 
       {/* Display Package History */}
-      <h2>Package History</h2>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>TX ID</th>
-            <th>Package ID</th>
-            <th>Raw Product ID</th>
-            <th>Product Type ID</th>
-            <th>Status</th>
-            <th>Packaged Date</th>
-            <th>Weight</th>
-            <th>Last Shipment Id</th>
-            <th>Processor Org Id</th>
-            <th>Current Owner Org Id</th>
-          </tr>
-        </thead>
-        <tbody>
-          {history.packageHistory.map((ph) => (
-            <tr key={ph.txId}>
-              <td>{ph.txId}</td>
-              <td>{ph.record.id}</td>
-              <td>{ph.record.rawProductId}</td>
-              <td>{ph.record.productTypeId}</td>
-              <td>{ph.record.status}</td>
-              <td>{ph.record.packagedDateTime}</td>
-              <td>{ph.record.weight}</td>
-              <td>{ph.record.lastShipmentId}</td>
-              <td>{ph.record.processorOrgId}</td>
-              <td>{ph.record.currentOwnerOrgId}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <div style={{ padding: "0 20px" }}>
+        <h2>Package History</h2>
+        <div style={{ overflowX: "auto" }}>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>TX ID</th>
+                <th>Package ID</th>
+                <th>Raw Product ID</th>
+                <th>Product Type ID</th>
+                <th>Status</th>
+                <th>Packaged Date</th>
+                <th>Weight</th>
+                <th>Last Shipment Id</th>
+                <th>Processor Org Id</th>
+                <th>Current Owner Org Id</th>
+                <th>Submitter MSP Id</th>
+                <th>Invoked Function</th>
+              </tr>
+            </thead>
+            <tbody>
+              {history.packageHistory.map((ph) => (
+                <tr key={ph.txId}>
+                  <td>{ph.txId}</td>
+                  <td>{ph.record.id}</td>
+                  <td>{ph.record.rawProductId}</td>
+                  <td>{ph.record.productTypeId}</td>
+                  <td>{ph.record.status}</td>
+                  <td>{ph.record.packagedDateTime}</td>
+                  <td>{ph.record.weight}</td>
+                  <td>{ph.record.lastShipmentId}</td>
+                  <td>{ph.record.processorOrgId}</td>
+                  <td>{ph.record.currentOwnerOrgId}</td>
+                  <td>{ph.record.submitterMSPID}</td>
+                  <td>{ph.record.invokedFunction}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
+      </div>
 
       {/* Display Raw Product History */}
-      <h2>Raw Product History</h2>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>TX ID</th>
-            <th>Product ID</th>
-            <th>Product Name</th>
-            <th>Status</th>
-            <th>Farm Org ID</th>
-            <th>Current Owner Org Id</th>
-          </tr>
-        </thead>
-        <tbody>
-          {history.rawProductHistory.map((rph) => (
-            <tr key={rph.txId}>
-              <td>{rph.txId}</td>
-              <td>{rph.record.id}</td>
-              <td>{rph.record.name}</td>
-              <td>{rph.record.status}</td>
-              <td>{rph.record.farmOrgId}</td>
-              <td>{rph.record.currentOwnerOrgId}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <div style={{ padding: "0 20px" }}>
+        <h2>Raw Product History</h2>
+        <div style={{ overflowX: "auto" }}>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>TX ID</th>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Status</th>
+                <th>Farm Org ID</th>
+                <th>Current Owner Org Id</th>
+                <th>Submitter MSP Id</th>
+                <th>Invoked Function</th>
+              </tr>
+            </thead>
+            <tbody>
+              {history.rawProductHistory.map((rph) => (
+                <tr key={rph.txId}>
+                  <td>{rph.txId}</td>
+                  <td>{rph.record.id}</td>
+                  <td>{rph.record.name}</td>
+                  <td>{rph.record.status}</td>
+                  <td>{rph.record.farmOrgId}</td>
+                  <td>{rph.record.currentOwnerOrgId}</td>
+                  <td>{rph.record.submitterMSPID}</td>
+                  <td>{rph.record.invokedFunction}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
+      </div>
     </Container>
   );
 };

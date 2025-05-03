@@ -181,6 +181,8 @@ type FarmProduct struct {
 	Status            string `json:"status"`
 	FarmOrgID         string `json:"farmOrgId"`
 	CurrentOwnerOrgID string `json:"currentOwnerOrgId"`
+	SubmitterMSPID    string `json:"submitterMSPID"`
+	InvokedFunction   string `json:"invokedFunction"`
 }
 
 type ProductType struct {
@@ -204,6 +206,8 @@ type Package struct {
 	LastShipmentID    string  `json:"lastShipmentId"`
 	ProcessorOrgID    string  `json:"processorOrgId"`
 	CurrentOwnerOrgID string  `json:"currentOwnerOrgId"`
+	SubmitterMSPID    string  `json:"submitterMSPID"`
+	InvokedFunction   string  `json:"invokedFunction"`
 }
 
 type Shipment struct {
@@ -598,6 +602,12 @@ func (s *SmartContract) AddFarmProduct(ctx contractapi.TransactionContextInterfa
 		return fmt.Errorf("only organizations registered as Farm can add farm products")
 	}
 
+	// Get submitter MSP ID
+	mspId, err := ctx.GetClientIdentity().GetMSPID()
+	if err != nil {
+		return err
+	}
+
 	newProduct := &FarmProduct{
 		DocType:           FARM_PRODUCT_DOCTYPE,
 		ID:                GetKey(FarmProduct{}, farmProductKey),
@@ -605,6 +615,8 @@ func (s *SmartContract) AddFarmProduct(ctx contractapi.TransactionContextInterfa
 		Status:            Growing.String(),
 		FarmOrgID:         requestingOrgKey,
 		CurrentOwnerOrgID: requestingOrgKey,
+		SubmitterMSPID:    mspId,
+		InvokedFunction:   "AddFarmProduct",
 	}
 
 	// Marshal new organization into JSON format
@@ -649,8 +661,15 @@ func (s *SmartContract) UpdateFarmProductStatus(ctx contractapi.TransactionConte
 		return fmt.Errorf("only the current owner can update the farm product status")
 	}
 
+	mspId, err := ctx.GetClientIdentity().GetMSPID()
+	if err != nil {
+		return err
+	}
+
 	//update farm product status
 	farmProduct.Status = nextStatus.String()
+	farmProduct.SubmitterMSPID = mspId
+	farmProduct.InvokedFunction = "UpdateFarmProductStatus"
 
 	farmProductBytes, err := json.Marshal(farmProduct)
 	if err != nil {
@@ -680,8 +699,16 @@ func (s *SmartContract) TransferFarmProduct(ctx contractapi.TransactionContextIn
 
 	newOrgKey = GetKey(Organization{}, newOrgKey)
 
+	// Get submitter MSP ID
+	mspId, err := ctx.GetClientIdentity().GetMSPID()
+	if err != nil {
+		return err
+	}
+
 	//transfer farm product
 	farmProduct.CurrentOwnerOrgID = newOrgKey
+	farmProduct.SubmitterMSPID = mspId
+	farmProduct.InvokedFunction = "TransferFarmProduct"
 
 	farmProductBytes, err := json.Marshal(farmProduct)
 	if err != nil {
@@ -813,6 +840,12 @@ func (s *SmartContract) AddPackage(ctx contractapi.TransactionContextInterface, 
 		return fmt.Errorf("raw farm product is not existed")
 	}
 
+	// Get submitter MSP ID
+	mspId, err := ctx.GetClientIdentity().GetMSPID()
+	if err != nil {
+		return err
+	}
+
 	newPackage := &Package{
 		DocType:           PACKAGE_DOCTYPE,
 		ID:                GetKey(Package{}, packageKey),
@@ -824,6 +857,8 @@ func (s *SmartContract) AddPackage(ctx contractapi.TransactionContextInterface, 
 		LastShipmentID:    "",
 		ProcessorOrgID:    requestingOrgKey,
 		CurrentOwnerOrgID: requestingOrgKey,
+		SubmitterMSPID:    mspId,
+		InvokedFunction:   "AddPackage",
 	}
 
 	newPackageBytes, err := json.Marshal(newPackage)
@@ -920,10 +955,19 @@ func (s *SmartContract) StartShipment(ctx contractapi.TransactionContextInterfac
 	if updatedPackage.CurrentOwnerOrgID != requestingOrgKey {
 		return fmt.Errorf("package must be owned by you")
 	}
+
+	// Get submitter MSP ID
+	mspId, err := ctx.GetClientIdentity().GetMSPID()
+	if err != nil {
+		return err
+	}
+
 	//Update pakage
 	updatedPackage.Status = Shipping.String()
 	updatedPackage.LastShipmentID = shipment.ID
 	updatedPackage.CurrentOwnerOrgID = shipment.DistributorOrgID
+	updatedPackage.SubmitterMSPID = mspId
+	updatedPackage.InvokedFunction = "StartShipment"
 	updatedPackageBytes, err := json.Marshal(updatedPackage)
 	if err != nil {
 		return fmt.Errorf("failed to marshal the package: %v", err)
@@ -959,7 +1003,14 @@ func (s *SmartContract) TransferPackage(ctx contractapi.TransactionContextInterf
 
 	newOrgKey = GetKey(Organization{}, newOrgKey)
 
-	//transfer farm product
+	// Get submitter MSP ID
+	mspId, err := ctx.GetClientIdentity().GetMSPID()
+	if err != nil {
+		return err
+	}
+
+	transferedPackage.SubmitterMSPID = mspId
+	transferedPackage.InvokedFunction = "TransferPackage"
 	transferedPackage.CurrentOwnerOrgID = newOrgKey
 
 	transferedPackageBytes, err := json.Marshal(transferedPackage)
@@ -1021,6 +1072,14 @@ func (s *SmartContract) UpdatePackageStatus(ctx contractapi.TransactionContextIn
 		return fmt.Errorf("only the current owner can update the package status")
 	}
 
+	// Get submitter MSP ID
+	mspId, err := ctx.GetClientIdentity().GetMSPID()
+	if err != nil {
+		return err
+	}
+
+	updatedPackage.SubmitterMSPID = mspId
+	updatedPackage.InvokedFunction = "UpdatePackageStatus"
 	updatedPackage.Status = packageStatus.String()
 
 	packageBytes, err := json.Marshal(updatedPackage)

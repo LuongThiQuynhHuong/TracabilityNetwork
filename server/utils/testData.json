@@ -1,97 +1,143 @@
 {
-    "packageHistory": [
+  "packageHistory": [
       {
-        "record": {
-          "docType": "PackageType",
-          "id": "123",
-          "rawProductId": "rawProduct1",
-          "productTypeId": "product1",
-          "status": "Packaged",
-          "packagedDateTime": "2025-04-20T10:30:00",
-          "weight": 5,
-          "lastShipmentId": "shipment123",
-          "processorOrgId": "processorOrg1",
-          "currentOwnerOrgId": "organization1"
-        },
-        "txId": "tx123",
-        "timestamp": "2025-04-20T11:00:00",
-        "isDelete": false
+          "record": {
+              "docType": "package",
+              "id": "package-1746278266520757",
+              "rawProductId": "farmProduct-1746277954946337",
+              "productTypeId": "productType-pig-leg",
+              "status": "Distributed",
+              "packagedDateTime": "2025-05-03 20:18:00",
+              "weight": 6.3,
+              "lastShipmentId": "shipment-1746278683321654",
+              "processorOrgId": "organization-processor",
+              "currentOwnerOrgId": "organization-retailer",
+              "submitterMSPID": "retailerMSP",
+              "invokedFunction": "UpdatePackageStatus"
+          },
+          "txId": "17754979a66b359ac9d17665eecbd28f9caf22dffdfdf9221ac31179e579ba6d",
+          "timestamp": "2025-05-03T13:29:56.908Z",
+          "isDelete": false
       },
       {
-        "record": {
-          "docType": "PackageType",
-          "id": "124",
-          "rawProductId": "rawProduct2",
-          "productTypeId": "product2",
-          "status": "Shipping",
-          "packagedDateTime": "2025-04-21T12:00:00",
-          "weight": 8,
-          "lastShipmentId": "shipment124",
-          "processorOrgId": "processorOrg2",
-          "currentOwnerOrgId": "organization2"
-        },
-        "txId": "tx124",
-        "timestamp": "2025-04-21T12:15:00",
-        "isDelete": false
+          "record": {
+              "docType": "package",
+              "id": "package-1746278266520757",
+              "rawProductId": "farmProduct-1746277954946337",
+              "productTypeId": "productType-pig-leg",
+              "status": "Shipping",
+              "packagedDateTime": "2025-05-03 20:18:00",
+              "weight": 6.3,
+              "lastShipmentId": "shipment-1746278683321654",
+              "processorOrgId": "organization-processor",
+              "currentOwnerOrgId": "organization-retailer",
+              "submitterMSPID": "distributorMSP",
+              "invokedFunction": "TransferPackage"
+          },
+          "txId": "4205a4a56c461f2502951c012777affcb9b9b2057c07169b8c71a35fb20056fd",
+          "timestamp": "2025-05-03T13:29:21.428Z",
+          "isDelete": false
       },
       {
-        "record": {
-          "docType": "PackageType",
-          "id": "125",
-          "rawProductId": "rawProduct3",
-          "productTypeId": "product3",
-          "status": "Distributed",
-          "packagedDateTime": "2025-04-22T08:30:00",
-          "weight": 3,
-          "lastShipmentId": "shipment125",
-          "processorOrgId": "processorOrg3",
-          "currentOwnerOrgId": "organization3"
-        },
-        "txId": "tx125",
-        "timestamp": "2025-04-22T09:00:00",
-        "isDelete": false
+          "record": {
+              "docType": "package",
+              "id": "package-1746278266520757",
+              "rawProductId": "farmProduct-1746277954946337",
+              "productTypeId": "productType-pig-leg",
+              "status": "Shipping",
+              "packagedDateTime": "2025-05-03 20:18:00",
+              "weight": 6.3,
+              "lastShipmentId": "shipment-1746278683321654",
+              "processorOrgId": "organization-processor",
+              "currentOwnerOrgId": "organization-distributor",
+              "submitterMSPID": "processorMSP",
+              "invokedFunction": "StartShipment"
+          },
+          "txId": "854061187162ac0647a97e3adbcf714e41fb13ee7a5f5a484de8b780c5183678",
+          "timestamp": "2025-05-03T13:28:22.164Z",
+          "isDelete": false
+      },
+      {
+          "record": {
+              "docType": "package",
+              "id": "package-1746278266520757",
+              "rawProductId": "farmProduct-1746277954946337",
+              "productTypeId": "productType-pig-leg",
+              "status": "Packaged",
+              "packagedDateTime": "2025-05-03 20:18:00",
+              "weight": 6.3,
+              "lastShipmentId": "",
+              "processorOrgId": "organization-processor",
+              "currentOwnerOrgId": "organization-processor",
+              "submitterMSPID": "processorMSP",
+              "invokedFunction": "AddPackage"
+          },
+          "txId": "98cdcac64e237ce8cac38e62970fe662bd738eb57e21ec972b671e9fbd8d77fe",
+          "timestamp": "2025-05-03T13:19:40.82Z",
+          "isDelete": false
       }
-    ],
-    "rawProductHistory": [
+  ],
+  "rawProductHistory": [
       {
-        "record": {
-          "docType": "FarmProduct",
-          "id": "farmProduct1",
-          "name": "Tomato",
-          "status": "Growing",
-          "farmOrgId": "organization1",
-          "currentOwnerOrgId": "organization1"
-        },
-        "txId": "tx321",
-        "timestamp": "2025-04-20T11:30:00",
-        "isDelete": false
+          "record": {
+              "docType": "farmProduct",
+              "id": "farmProduct-1746277954946337",
+              "name": "Pig",
+              "status": "Processed",
+              "farmOrgId": "organization-farm",
+              "currentOwnerOrgId": "organization-processor",
+              "submitterMSPID": "processorMSP",
+              "invokedFunction": "UpdateFarmProductStatus"
+          },
+          "txId": "8928379c1fe2c1c6aa3cbaff12a75c36b17a9e794d147db2271127e23445ca20",
+          "timestamp": "2025-05-03T13:23:34.483Z",
+          "isDelete": false
       },
       {
-        "record": {
-          "docType": "FarmProduct",
-          "id": "farmProduct2",
-          "name": "Lettuce",
-          "status": "Harvested",
-          "farmOrgId": "organization2",
-          "currentOwnerOrgId": "organization2"
-        },
-        "txId": "tx322",
-        "timestamp": "2025-04-21T10:00:00",
-        "isDelete": false
+          "record": {
+              "docType": "farmProduct",
+              "id": "farmProduct-1746277954946337",
+              "name": "Pig",
+              "status": "Mature",
+              "farmOrgId": "organization-farm",
+              "currentOwnerOrgId": "organization-processor",
+              "submitterMSPID": "farmMSP",
+              "invokedFunction": "TransferFarmProduct"
+          },
+          "txId": "f2a648e61b47b95201cce0beda388b8d9ec8aa8ff10aee1c64e94f8131eac57e",
+          "timestamp": "2025-05-03T13:14:44.873Z",
+          "isDelete": false
       },
       {
-        "record": {
-          "docType": "FarmProduct",
-          "id": "farmProduct3",
-          "name": "Carrot",
-          "status": "Processed",
-          "farmOrgId": "organization3",
-          "currentOwnerOrgId": "organization3"
-        },
-        "txId": "tx323",
-        "timestamp": "2025-04-22T09:30:00",
-        "isDelete": false
+          "record": {
+              "docType": "farmProduct",
+              "id": "farmProduct-1746277954946337",
+              "name": "Pig",
+              "status": "Mature",
+              "farmOrgId": "organization-farm",
+              "currentOwnerOrgId": "organization-farm",
+              "submitterMSPID": "farmMSP",
+              "invokedFunction": "UpdateFarmProductStatus"
+          },
+          "txId": "48c1c33e89a80dbb55c46c052fdb90aae99973f5bb2ba61e92923d1b7281a196",
+          "timestamp": "2025-05-03T13:13:48.864Z",
+          "isDelete": false
+      },
+      {
+          "record": {
+              "docType": "farmProduct",
+              "id": "farmProduct-1746277954946337",
+              "name": "Pig",
+              "status": "Growing",
+              "farmOrgId": "organization-farm",
+              "currentOwnerOrgId": "organization-farm",
+              "submitterMSPID": "farmMSP",
+              "invokedFunction": "AddFarmProduct"
+          },
+          "txId": "83b09560fb2084d22aa12d429493cc8933fe0fd2f8a57f528d864e7040c993e0",
+          "timestamp": "2025-05-03T13:12:44.98Z",
+          "isDelete": false
       }
-    ]
-  }
+  ]
+}
   

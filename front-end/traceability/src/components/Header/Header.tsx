@@ -40,6 +40,7 @@ const Header = ({ onMenuClick }: { onMenuClick: (body: string, organization: Org
                 <NavDropdown.Item onClick={() => onMenuClick(ADD_PACKAGE, OrganizationKey.Processor)}>{ADD_PACKAGE_TITLE}</NavDropdown.Item>
                 <NavDropdown.Item onClick={() => onMenuClick(TRANSFER_PACKAGE, OrganizationKey.Processor)}>{TRANSFER_PACKAGE_TITLE}</NavDropdown.Item>
                 <NavDropdown.Item onClick={() => onMenuClick(UPDATE_PACKAGE_STATUS, OrganizationKey.Processor)}>{UPDATE_PACKAGE_STATUS_TITLE}</NavDropdown.Item>
+                <NavDropdown.Item onClick={() => onMenuClick(START_SHIPMENT, OrganizationKey.Processor)}>{START_SHIPMENT_TITLE}</NavDropdown.Item>
                 <NavDropdown.Item onClick={() => onMenuClick(GENERATE_TRACING_QR_CODE, OrganizationKey.Processor)}>{GENERATE_TRACING_QR_CODE_TITLE}</NavDropdown.Item>
               </NavDropdown>
 

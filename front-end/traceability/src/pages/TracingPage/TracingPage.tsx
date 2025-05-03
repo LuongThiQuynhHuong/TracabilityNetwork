@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import TracingHeader from "@components/Header/TracingHeader";
-import { RequestModel, ResponseModel, testApiController } from "@services/APIController";
+import { RequestModel, ResponseModel, traceProvenanceController } from "@services/APIController";
 import CombinedHistoryUI from "@components/TracingHistory/CombinedHistoryUI";
 import { CombinedHistory } from "@utils/BaseIntefaces";
 import { Spinner, Toast } from "react-bootstrap";
@@ -35,11 +35,10 @@ const TracingPage: React.FC = () => {
       try {
         const trace: RequestModel = {
           organization: organization,
-          packageKey: packageKey,
-          checkbool: true,
+          packageKey: packageKey
         };
 
-        const response = await testApiController(trace, true);
+        const response = await traceProvenanceController(trace, true);
 
         if (response.success) {
           setToastMessage("Data loaded successfully!");

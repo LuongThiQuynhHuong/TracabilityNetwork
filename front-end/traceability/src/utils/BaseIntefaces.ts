@@ -15,6 +15,8 @@ export interface Package {
     lastShipmentId: string;
     processorOrgId: string;
     currentOwnerOrgId: string;
+    submitterMSPID: string;
+    invokedFunction: string;
   }
   
   export interface FarmProduct {
@@ -24,6 +26,8 @@ export interface Package {
     status: string;
     farmOrgId: string;
     currentOwnerOrgId: string;
+    submitterMSPID: string;
+    invokedFunction: string;
   }
   
   export  interface PackageHistory {
