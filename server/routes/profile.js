@@ -44,6 +44,15 @@ let profile = {
 		"peerEndpoint": "localhost:10051",
 		"peerHostAlias":  "peer0.retailer.ptracing.com",
         "mspId": "retailerMSP"
-    }
+    },
+    test: {
+        "cryptoPath": "../network/organizations/peerOrganizations/regulatoryDepartment.ptracing.com", 
+		"keyDirectoryPath": "../network/organizations/peerOrganizations/regulatoryDepartment.ptracing.com/users/User1@regulatoryDepartment.ptracing.com/msp/keystore/",
+        "certPath":     "../network/organizations/peerOrganizations/regulatoryDepartment.ptracing.com/users/User1@regulatoryDepartment.ptracing.com/msp/signcerts/cert.pem",
+		"tlsCertPath":  "../network/organizations/peerOrganizations/regulatoryDepartment.ptracing.com/peers/peer0.regulatoryDepartment.ptracing.com/tls/ca.crt",
+		"peerEndpoint": "localhost:7051",
+		"peerHostAlias":  "peer0.regulatoryDepartment.ptracing.com",
+        "mspId": "regulatoryDepartmentMSP"
+    },
 }
 module.exports = { profile }

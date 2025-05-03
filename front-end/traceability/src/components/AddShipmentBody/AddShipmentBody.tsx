@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Container, Form } from 'react-bootstrap';
 import { addShipmentController, RequestModel } from '@services/APIController';
 import FormHeader from '@components/FormHeader/FormHeader';
 import { AppBodyProps } from '@utils/BaseIntefaces';
 import { ToastStatus } from '@utils/AppConstant';
 import CustomToast from '@components/CustomToast/CustomToast';
-import { GetServerValidDateTimeFormat, OnCloseCustomToast, UpdateToastStatus } from '@utils/UtilFunctions';
+import { GenerateUniqueString, GetServerValidDateTimeFormat, OnCloseCustomToast, UpdateToastStatus } from '@utils/UtilFunctions';
 
 const AddShipmentBody: React.FC<AppBodyProps> = ({ organization }) => {
+  const [shipmentKey, setShipmentKey] = useState('');
   const [fromAddress, setFromAddress] = useState('');
   const [toAddress, setToAddress] = useState('');
   const [processorOrgId, setProcessorOrgId] = useState('');
@@ -16,6 +17,10 @@ const AddShipmentBody: React.FC<AppBodyProps> = ({ organization }) => {
   const [toastBodyText, setToastBodyText] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [toastStatus, setToastStatus] = useState<ToastStatus>(ToastStatus.None);
+  
+  useEffect(() => {
+      setShipmentKey(GenerateUniqueString());
+      }, [organization]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,6 +29,7 @@ const AddShipmentBody: React.FC<AppBodyProps> = ({ organization }) => {
 
     const request : RequestModel = {
       organization: organization,
+      shipmentKey: shipmentKey,
       fromAddress: fromAddress,
       destinationAddress: toAddress,
       processorOrgKey: processorOrgId,
@@ -52,6 +58,10 @@ const AddShipmentBody: React.FC<AppBodyProps> = ({ organization }) => {
       <FormHeader organization={organization} bodyTitle="Add Shipment" />
 
       <Form onSubmit={onSubmit}>
+        <Form.Group className="mb-3" controlId="shipmentKey">
+          <Form.Label>Shipment Key: {shipmentKey}</Form.Label>
+        </Form.Group>
+
         <Form.Group className="mb-3" controlId="fromAddress">
           <Form.Label>From Address</Form.Label>
           <Form.Control

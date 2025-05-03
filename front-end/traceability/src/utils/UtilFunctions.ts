@@ -31,3 +31,11 @@ export const GetServerValidDateTimeFormat = (dateString: string): string => {
     const date = parseISO(dateString);
     return format(date, 'yyyy-MM-dd HH:mm:ss');
   };
+
+export const GenerateUniqueString = () : string => {
+    const timestamp = Date.now(); // Current timestamp in milliseconds
+    const randomNumber = Math.floor(Math.random() * 1000); // Random number between 0-999
+  
+    const uniqueString = `${timestamp}${randomNumber}`;
+    return uniqueString;
+  }

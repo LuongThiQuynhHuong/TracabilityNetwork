@@ -24,6 +24,7 @@ const HLF_TRANSACTION_NAME = {
   END_SHIPMENT : "EndShipment",
   UPDATE_PACKAGE_STATUS : "UpdatePackageStatus",
   TRACE_PROVENANCE : "TraceProvenance",
+  INITIALIZE_SYSTEM : "InitializeSystem",
 };
 
 const API_ENDPOINT = {
@@ -41,6 +42,7 @@ const API_ENDPOINT = {
   END_SHIPMENT : "/endShipment",
   UPDATE_PACKAGE_STATUS : "/updatePackageStatus",
   TRACE_PROVENANCE : "/traceProvenance",
+  INITIALIZE_SYSTEM : "/initializeSystem",
 };
 
 module.exports = {

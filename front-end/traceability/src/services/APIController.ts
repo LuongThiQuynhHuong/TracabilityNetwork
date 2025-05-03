@@ -64,8 +64,8 @@ export async function registerOrgRoleController(request: Partial<RequestModel>, 
   }
   
 export async function addFarmProductController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
-    const { organization, name } = request;
-    return makeApiRequest(ADD_FARM_PRODUCT_ENDPOINT, { organization, name }, isUseExternalServerUrl);
+    const { organization, farmProductKey, name } = request;
+    return makeApiRequest(ADD_FARM_PRODUCT_ENDPOINT, { organization, farmProductKey, name }, isUseExternalServerUrl);
   }
   
 export async function updateFarmProductStatusController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
@@ -89,13 +89,13 @@ export async function approveProductTypeController(request: Partial<RequestModel
   }
   
 export async function addPackageController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
-    const { organization, rawProductKey, productTypeKey, packagedDateTime, weight } = request;
-    return makeApiRequest(ADD_PACKAGE_ENDPOINT, { organization, rawProductKey, productTypeKey, packagedDateTime, weight }, isUseExternalServerUrl);
+    const { organization, rawProductKey, productTypeKey, packageKey, packagedDateTime, weight } = request;
+    return makeApiRequest(ADD_PACKAGE_ENDPOINT, { organization, rawProductKey, productTypeKey, packageKey, packagedDateTime, weight }, isUseExternalServerUrl);
   }
   
 export async function addShipmentController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
-    const { organization, fromAddress, destinationAddress, startTime, processorOrgKey, retailerOrgKey } = request;
-    return makeApiRequest(ADD_SHIPMENT_ENDPOINT, { organization, fromAddress, destinationAddress, startTime, processorOrgKey, retailerOrgKey }, isUseExternalServerUrl);
+    const { organization, shipmentKey, fromAddress, destinationAddress, startTime, processorOrgKey, retailerOrgKey } = request;
+    return makeApiRequest(ADD_SHIPMENT_ENDPOINT, { organization, shipmentKey, fromAddress, destinationAddress, startTime, processorOrgKey, retailerOrgKey }, isUseExternalServerUrl);
   }
   
 export async function startShipmentController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {

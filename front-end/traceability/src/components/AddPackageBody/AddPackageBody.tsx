@@ -1,22 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Container, Form } from 'react-bootstrap';
 import { addPackageController, RequestModel } from '@services/APIController';
 import FormHeader from '@components/FormHeader/FormHeader';
 import { AppBodyProps } from '@utils/BaseIntefaces';
 import { ToastStatus } from '@utils/AppConstant';
 import CustomToast from '@components/CustomToast/CustomToast';
-import { GetServerValidDateTimeFormat, OnCloseCustomToast, UpdateToastStatus } from '@utils/UtilFunctions';
+import { GenerateUniqueString, GetServerValidDateTimeFormat, OnCloseCustomToast, UpdateToastStatus } from '@utils/UtilFunctions';
 
 const AddPackageBody: React.FC<AppBodyProps> = ({ organization }) => {
   // State hooks for each form field
   const [farmProductId, setFarmProductId] = useState('');
   const [productTypeId, setProductTypeId] = useState('');
+  const [packageKey, setPackageKey] = useState('');
   const [packagedTime, setPackagedTime] = useState('');
   const [weight, setWeight] = useState('');
   
   const [toastBodyText, setToastBodyText] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [toastStatus, setToastStatus] = useState<ToastStatus>(ToastStatus.None);
+
+  useEffect(() => {
+    setPackageKey(GenerateUniqueString());
+    }, [organization]);
 
   // Form submission handler
   const onSubmit = async (e: React.FormEvent) => {
@@ -28,6 +33,7 @@ const AddPackageBody: React.FC<AppBodyProps> = ({ organization }) => {
       organization :organization,
       rawProductKey : farmProductId,
       productTypeKey : productTypeId,
+      packageKey : packageKey,
       packagedDateTime : GetServerValidDateTimeFormat(packagedTime),
       weight : parseFloat(weight),
     };
@@ -54,6 +60,9 @@ const AddPackageBody: React.FC<AppBodyProps> = ({ organization }) => {
       <FormHeader organization={organization} bodyTitle="Add Package" />
 
       <Form onSubmit={onSubmit}>
+        <Form.Group className="mb-3" controlId="packageKey">
+          <Form.Label>Package Key: {packageKey}</Form.Label>
+        </Form.Group>
         <Form.Group className="mb-3" controlId="farmProductId">
           <Form.Label>Farm Product Id</Form.Label>
           <Form.Control

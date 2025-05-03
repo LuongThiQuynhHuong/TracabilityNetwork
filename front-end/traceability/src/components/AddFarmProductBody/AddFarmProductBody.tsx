@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Container, Form } from 'react-bootstrap';
 import { addFarmProductController, RequestModel } from '@services/APIController';
 import FormHeader from '@components/FormHeader/FormHeader';
 import { AppBodyProps } from '@utils/BaseIntefaces';
 import { ToastStatus } from '@utils/AppConstant';
 import CustomToast from '@components/CustomToast/CustomToast';
-import { OnCloseCustomToast, UpdateToastStatus } from '@utils/UtilFunctions';
+import { GenerateUniqueString, OnCloseCustomToast, UpdateToastStatus } from '@utils/UtilFunctions';
 
 const AddFarmProductBody: React.FC<AppBodyProps> = ({ organization }) => {
   const [farmProductName, setFarmProductName] = useState('');
+  const [farmProductKey, setFarmProductKey] = useState('');
   const [toastBodyText, setToastBodyText] = useState('');
   const [showToast, setShowToast]     = useState(false);
   const [toastStatus, setToastStatus] = useState<ToastStatus>(ToastStatus.None);
+
+  useEffect(() => {
+    setFarmProductKey(GenerateUniqueString());
+  }, [organization]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,6 +25,7 @@ const AddFarmProductBody: React.FC<AppBodyProps> = ({ organization }) => {
 
     const request : RequestModel = {
       organization : organization,
+      farmProductKey : farmProductKey,
       name: farmProductName,
     };
 
@@ -44,6 +50,9 @@ const AddFarmProductBody: React.FC<AppBodyProps> = ({ organization }) => {
       <FormHeader organization={organization} bodyTitle="Add Farm Product" />
 
       <Form onSubmit={onSubmit}>
+        <Form.Group className="mb-3" controlId="farmProductKey">
+          <Form.Label>Farm Product Key: {farmProductKey}</Form.Label>
+        </Form.Group>
         <Form.Group className="mb-3" controlId="farmProductName">
           <Form.Label>Farm Product Name</Form.Label>
           <Form.Control

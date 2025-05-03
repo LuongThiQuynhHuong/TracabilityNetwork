@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"math/rand"
 	"reflect"
 	"strings"
 	"time"
@@ -287,21 +286,8 @@ func GetKey(structInstance any, assetID string) string {
 	return fmt.Sprintf("%s-%s", structName, assetID)
 }
 
-func GenerateUniqueString() string {
-	// Get the current Unix timestamp in nanoseconds
-	timestamp := time.Now().UnixNano()
-
-	// Generate a random number to ensure uniqueness
-	randomNumber := rand.Intn(1000)
-
-	// Combine the timestamp and the random number to form a unique ID
-	uniqueString := fmt.Sprintf("%d%d", timestamp, randomNumber)
-
-	return uniqueString
-}
-
-func GenerateUniqueKey(structInstance any) string {
-	return GetKey(structInstance, GenerateUniqueString())
+func GetOrgRoleTypeKey(orgKey string, role OrgRoleType) string {
+	return fmt.Sprintf("%s-%s", GetKey(Organization{}, orgKey), role.String())
 }
 
 func GetQueryResultForQueryString(ctx contractapi.TransactionContextInterface, queryString string) (shim.StateQueryIteratorInterface, error) {
@@ -341,7 +327,7 @@ func CheckOrgRole(ctx contractapi.TransactionContextInterface, orgKey, role stri
 		}
 	}
 
-	return false, fmt.Errorf("organization %s does not have %s role", orgKey, role)
+	return false, nil
 }
 
 func CheckFarmProductStatusTransition(currentStatus, newStatus FarmProductStatus) error {
@@ -454,6 +440,37 @@ func (s *SmartContract) GetFarmProductHistory(ctx contractapi.TransactionContext
 	return records, nil
 }
 
+func (s *SmartContract) InitializeOrganizationAndRole(ctx contractapi.TransactionContextInterface, orgKey string, role OrgRoleType) error {
+	standardOrgKey := GetKey(Organization{}, orgKey)
+
+	err := s.AddNewOrganization(ctx, standardOrgKey)
+	if err != nil {
+		return err
+	}
+
+	// Create new organization role
+	newRole := &OrganizationRole{
+		DocType: ORGANIZATION_ROLE_DOCTYPE,
+		ID:      GetOrgRoleTypeKey(orgKey, role),
+		OrgID:   standardOrgKey,
+		Role:    role.String(),
+	}
+
+	// Marshal new organization into JSON format
+	orgRoleBytes, err := json.Marshal(newRole)
+	if err != nil {
+		return fmt.Errorf("failed to marshal new organization role: %v", err)
+	}
+
+	// Store the new organization in the world state
+	err = ctx.GetStub().PutState(newRole.ID, orgRoleBytes)
+	if err != nil {
+		return fmt.Errorf("failed to store organization in world state for new role ID %s: %v", newRole.ID, err)
+	}
+
+	return nil
+}
+
 /////////////////////////////////////////////////////// Smart contracts ///////////////////////////////////////////////////////
 
 func (s *SmartContract) AssetExists(ctx contractapi.TransactionContextInterface, id string) (bool, error) {
@@ -549,7 +566,7 @@ func (s *SmartContract) RegisterOrgRole(ctx contractapi.TransactionContextInterf
 	// Create new organization role
 	newRole := &OrganizationRole{
 		DocType: ORGANIZATION_ROLE_DOCTYPE,
-		ID:      GenerateUniqueKey(OrganizationRole{}),
+		ID:      GetOrgRoleTypeKey(orgKey, registeredRoleType),
 		OrgID:   registeredOrgKey,
 		Role:    registeredRoleType.String(),
 	}
@@ -569,7 +586,7 @@ func (s *SmartContract) RegisterOrgRole(ctx contractapi.TransactionContextInterf
 	return nil
 }
 
-func (s *SmartContract) AddFarmProduct(ctx contractapi.TransactionContextInterface, requestingOrg string, name string) error {
+func (s *SmartContract) AddFarmProduct(ctx contractapi.TransactionContextInterface, requestingOrg string, farmProductKey, name string) error {
 	requestingOrgKey := GetKey(Organization{}, requestingOrg)
 
 	isFarmer, err := CheckOrgRole(ctx, requestingOrgKey, Farm.String())
@@ -583,7 +600,7 @@ func (s *SmartContract) AddFarmProduct(ctx contractapi.TransactionContextInterfa
 
 	newProduct := &FarmProduct{
 		DocType:           FARM_PRODUCT_DOCTYPE,
-		ID:                GenerateUniqueKey(FarmProduct{}),
+		ID:                GetKey(FarmProduct{}, farmProductKey),
 		Name:              name,
 		Status:            Growing.String(),
 		FarmOrgID:         requestingOrgKey,
@@ -763,7 +780,7 @@ func (s *SmartContract) ApproveProductType(ctx contractapi.TransactionContextInt
 	return nil
 }
 
-func (s *SmartContract) AddPackage(ctx contractapi.TransactionContextInterface, requestingOrg string, rawProductKey, productTypeKey, packagedDateTime string, weight float64) error {
+func (s *SmartContract) AddPackage(ctx contractapi.TransactionContextInterface, requestingOrg string, rawProductKey, productTypeKey, packageKey, packagedDateTime string, weight float64) error {
 	_, err := ValidateDateTime(packagedDateTime)
 	if err != nil {
 		return err
@@ -798,7 +815,7 @@ func (s *SmartContract) AddPackage(ctx contractapi.TransactionContextInterface, 
 
 	newPackage := &Package{
 		DocType:           PACKAGE_DOCTYPE,
-		ID:                GenerateUniqueKey(Package{}),
+		ID:                GetKey(Package{}, packageKey),
 		RawProductID:      rawProductKey,
 		ProductTypeID:     productTypeKey,
 		Status:            Packaged.String(),
@@ -822,7 +839,7 @@ func (s *SmartContract) AddPackage(ctx contractapi.TransactionContextInterface, 
 	return nil
 }
 
-func (s *SmartContract) AddShipment(ctx contractapi.TransactionContextInterface, requestingOrg string, fromAddress, destinationAddress, startTime, processorOrgKey, retailerOrgKey string) error {
+func (s *SmartContract) AddShipment(ctx contractapi.TransactionContextInterface, requestingOrg string, shipmentKey, fromAddress, destinationAddress, startTime, processorOrgKey, retailerOrgKey string) error {
 	_, err := ValidateDateTime(startTime)
 	if err != nil {
 		return err
@@ -857,7 +874,7 @@ func (s *SmartContract) AddShipment(ctx contractapi.TransactionContextInterface,
 
 	newShipment := &Shipment{
 		DocType:            SHIPMENT_DOCTYPE,
-		ID:                 GenerateUniqueKey(Shipment{}),
+		ID:                 GetKey(Shipment{}, shipmentKey),
 		Status:             Ready.String(),
 		FromAddress:        fromAddress,
 		DestinationAddress: destinationAddress,
@@ -1046,6 +1063,36 @@ func (s *SmartContract) TraceProvenance(ctx contractapi.TransactionContextInterf
 	}
 
 	return &result, nil
+}
+
+func (s *SmartContract) InitializeSystem(ctx contractapi.TransactionContextInterface) error {
+
+	err := s.InitializeOrganizationAndRole(ctx, "regulatoryDepartment", RegulatoryDepartment)
+	if err != nil {
+		return err
+	}
+
+	err = s.InitializeOrganizationAndRole(ctx, "farm", Farm)
+	if err != nil {
+		return err
+	}
+
+	err = s.InitializeOrganizationAndRole(ctx, "processor", Processor)
+	if err != nil {
+		return err
+	}
+
+	err = s.InitializeOrganizationAndRole(ctx, "distributor", Distributor)
+	if err != nil {
+		return err
+	}
+
+	err = s.InitializeOrganizationAndRole(ctx, "retailer", Retailer)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // ///////////////////////////////////////////////////// Main ///////////////////////////////////////////////////////

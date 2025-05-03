@@ -8,6 +8,41 @@ const { formatGrpcErrorMessage } = require('../utils/formatError');
 const router = express.Router();
 const userClient = new clientApplication();
 
+//InitializeSystem
+router.post(constants.API_ENDPOINT.INITIALIZE_SYSTEM, async (req, res) => {
+  try {
+    const organization = "regulatoryDepartment"
+    let orgClient = new clientApplication();
+
+    const result = await orgClient.submitTxn(
+      organization,
+      constants.HLF_CONSTANTS.CHANNEL_NAME,
+      constants.HLF_CONSTANTS.CHAINCODE_NAME,
+      constants.HLF_CONSTANTS.CONTRACT_NAME,
+      constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
+      constants.HLF_TRANSACTION_NAME.INITIALIZE_SYSTEM,
+    );
+
+    res
+      .status(201)
+      .json({
+        success: true,
+        message: "Initialize system successfully!",
+        data: { result },
+      });
+  } catch (error) {
+    console.error("Error initialize system:", error);
+
+    const errorMessage = formatGrpcErrorMessage(error, "Error initialize system!");
+
+    res.status(500).json({
+      success: false,
+      message: errorMessage,
+      data: { error: error.message },
+    });
+  }
+});
+
 //AddNewOrganization
 router.post(constants.API_ENDPOINT.ADD_NEW_ORG, async (req, res) => {
   try {
@@ -99,9 +134,9 @@ router.post(constants.API_ENDPOINT.REGISTER_ORG_ROLE, async (req, res) => {
 //AddFarmProduct
 router.post(constants.API_ENDPOINT.ADD_FARM_PRODUCT, async (req, res) => {
   try {
-    const { organization, name } = req.body;
+    const { organization, farmProductKey, name } = req.body;
 
-    if (!organization || !name) {
+    if (!organization || !farmProductKey || !name) {
       return res
         .status(400)
         .json({ success: false, message: "All fields are required." });
@@ -117,6 +152,7 @@ router.post(constants.API_ENDPOINT.ADD_FARM_PRODUCT, async (req, res) => {
       constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
       constants.HLF_TRANSACTION_NAME.ADD_FARM_PRODUCT,
       organization,
+      farmProductKey,
       name
     );
 
@@ -275,10 +311,10 @@ router.post(constants.API_ENDPOINT.REGISTER_PRODUCT_TYPE, async (req, res) => {
 
 //ApproveProductType
 router.post(constants.API_ENDPOINT.APPROVE_PRODUCT_TYPE, async (req, res) => {
-  try {
-    const { organization, productTypeKey, isApproved } = req.body;
+  const { organization, productTypeKey, isApproved } = req.body;
 
-    if (!organization || !productTypeKey) {
+  try {
+    if (!organization || !productTypeKey || typeof isApproved !== 'boolean') {
       return res
         .status(400)
         .json({ success: false, message: "All fields are required." });
@@ -292,10 +328,10 @@ router.post(constants.API_ENDPOINT.APPROVE_PRODUCT_TYPE, async (req, res) => {
       constants.HLF_CONSTANTS.CHAINCODE_NAME,
       constants.HLF_CONSTANTS.CONTRACT_NAME,
       constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
-      constants.HLF_TRANSACTION_NAME.REGISTER_PRODUCT_TYPE,
+      constants.HLF_TRANSACTION_NAME.APPROVE_PRODUCT_TYPE,
       organization,
       productTypeKey,
-      isApproved
+      isApproved.toString()
     );
 
     res
@@ -321,9 +357,9 @@ router.post(constants.API_ENDPOINT.APPROVE_PRODUCT_TYPE, async (req, res) => {
 //AddPackage
 router.post(constants.API_ENDPOINT.ADD_PACKAGE, async (req, res) => {
   try {
-    const { organization, rawProductKey, productTypeKey, packagedDateTime, weight } = req.body;
+    const { organization, rawProductKey, productTypeKey, packageKey, packagedDateTime, weight } = req.body;
 
-    if (!organization || !rawProductKey || !productTypeKey || !packagedDateTime) {
+    if (!organization || !rawProductKey || !productTypeKey || !packageKey || !packagedDateTime) {
       return res
         .status(400)
         .json({ success: false, message: "All fields are required." });
@@ -341,8 +377,9 @@ router.post(constants.API_ENDPOINT.ADD_PACKAGE, async (req, res) => {
       organization,
       rawProductKey,
       productTypeKey,
+      packageKey,
       packagedDateTime,
-      weight
+      weight.toString()
     );
 
     res
@@ -368,9 +405,9 @@ router.post(constants.API_ENDPOINT.ADD_PACKAGE, async (req, res) => {
 //AddShipment
 router.post(constants.API_ENDPOINT.ADD_SHIPMENT, async (req, res) => {
   try {
-    const { organization, fromAddress, destinationAddress, startTime, processorOrgKey, retailerOrgKey } = req.body;
+    const { organization, shipmentKey, fromAddress, destinationAddress, startTime, processorOrgKey, retailerOrgKey } = req.body;
 
-    if (!organization || !fromAddress || !destinationAddress || !startTime || !processorOrgKey || !retailerOrgKey) {
+    if (!organization || !shipmentKey || !fromAddress || !destinationAddress || !startTime || !processorOrgKey || !retailerOrgKey) {
       return res
         .status(400)
         .json({ success: false, message: "All fields are required." });
@@ -386,6 +423,7 @@ router.post(constants.API_ENDPOINT.ADD_SHIPMENT, async (req, res) => {
       constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
       constants.HLF_TRANSACTION_NAME.ADD_SHIPMENT,
       organization,
+      shipmentKey,
       fromAddress,
       destinationAddress,
       startTime,
@@ -615,12 +653,15 @@ router.post(constants.API_ENDPOINT.TRACE_PROVENANCE, async (req, res) => {
       packageKey
     );
 
+    const buffer = Buffer.from(result);
+    const decoded = JSON.parse(buffer.toString('utf8'));
+
     res
       .status(201)
       .json({
         success: true,
         message: "Tracing provenance successfully!",
-        data: { result },
+        data: decoded,
       });
   } catch (error) {
     console.error("Error tracing provenance request:", error);
