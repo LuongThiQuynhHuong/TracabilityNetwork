@@ -21,6 +21,9 @@ const CombinedHistoryUI: React.FC<CombinedHistoryUIProps> = ({ packageId, histor
           <Table striped bordered hover>
             <thead>
               <tr>
+                <th>Timestamp</th>
+                <th>Submitter MSP Id</th>
+                <th>Invoked Function</th>
                 <th>TX ID</th>
                 <th>Package ID</th>
                 <th>Raw Product ID</th>
@@ -31,13 +34,14 @@ const CombinedHistoryUI: React.FC<CombinedHistoryUIProps> = ({ packageId, histor
                 <th>Last Shipment Id</th>
                 <th>Processor Org Id</th>
                 <th>Current Owner Org Id</th>
-                <th>Submitter MSP Id</th>
-                <th>Invoked Function</th>
               </tr>
             </thead>
             <tbody>
               {history.packageHistory.map((ph) => (
                 <tr key={ph.txId}>
+                  <td>{ph.timestamp}</td>
+                  <td>{ph.record.submitterMSPID}</td>
+                  <td>{ph.record.invokedFunction}</td>
                   <td>{ph.txId}</td>
                   <td>{ph.record.id}</td>
                   <td>{ph.record.rawProductId}</td>
@@ -48,8 +52,6 @@ const CombinedHistoryUI: React.FC<CombinedHistoryUIProps> = ({ packageId, histor
                   <td>{ph.record.lastShipmentId}</td>
                   <td>{ph.record.processorOrgId}</td>
                   <td>{ph.record.currentOwnerOrgId}</td>
-                  <td>{ph.record.submitterMSPID}</td>
-                  <td>{ph.record.invokedFunction}</td>
                 </tr>
               ))}
             </tbody>
@@ -64,27 +66,29 @@ const CombinedHistoryUI: React.FC<CombinedHistoryUIProps> = ({ packageId, histor
           <Table striped bordered hover>
             <thead>
               <tr>
+                <th>Timestamp</th>
+                <th>Submitter MSP Id</th>
+                <th>Invoked Function</th>
                 <th>TX ID</th>
                 <th>Product ID</th>
                 <th>Product Name</th>
                 <th>Status</th>
                 <th>Farm Org ID</th>
                 <th>Current Owner Org Id</th>
-                <th>Submitter MSP Id</th>
-                <th>Invoked Function</th>
               </tr>
             </thead>
             <tbody>
               {history.rawProductHistory.map((rph) => (
                 <tr key={rph.txId}>
+                  <td>{rph.timestamp}</td>
+                  <td>{rph.record.submitterMSPID}</td>
+                  <td>{rph.record.invokedFunction}</td>
                   <td>{rph.txId}</td>
                   <td>{rph.record.id}</td>
                   <td>{rph.record.name}</td>
                   <td>{rph.record.status}</td>
                   <td>{rph.record.farmOrgId}</td>
                   <td>{rph.record.currentOwnerOrgId}</td>
-                  <td>{rph.record.submitterMSPID}</td>
-                  <td>{rph.record.invokedFunction}</td>
                 </tr>
               ))}
             </tbody>
