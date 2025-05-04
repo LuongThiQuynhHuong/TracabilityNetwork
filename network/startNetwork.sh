@@ -15,7 +15,7 @@ sleep 3
 
 echo "—-------------Build the infrastructure—-----------------"
 
-docker compose -f docker/docker-compose-4org.yaml up -d
+docker compose -f docker/docker-compose-5org.yaml up -d
 sleep 3
 
 echo "-------------Generate the genesis block—-------------------------------"
@@ -28,15 +28,49 @@ configtxgen -profile ChannelUsingRaft -outputBlock ${PWD}/channel-artifacts/${CH
 
 echo "------ Create the application channel------"
 
-export ORDERER_CA=${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/msp/tlscacerts/tlsca.ptracing.com-cert.pem
+echo "------ Join Farm Orderer to the channel------"
 
-export ORDERER_ADMIN_TLS_SIGN_CERT=${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/tls/server.crt
+export ORDERER_CA=${PWD}/organizations/ordererOrganizations/farmOrderer.ptracing.com/orderers/farmOrderer.ptracing.com/msp/tlscacerts/tlsca.farmOrderer.ptracing.com-cert.pem
 
-export ORDERER_ADMIN_TLS_PRIVATE_KEY=${PWD}/organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/tls/server.key
+export ORDERER_ADMIN_TLS_SIGN_CERT=${PWD}/organizations/ordererOrganizations/farmOrderer.ptracing.com/orderers/farmOrderer.ptracing.com/tls/server.crt
 
-osnadmin channel join --channelID $CHANNEL_NAME --config-block ${PWD}/channel-artifacts/$CHANNEL_NAME.block -o localhost:7053 --ca-file $ORDERER_CA --client-cert $ORDERER_ADMIN_TLS_SIGN_CERT --client-key $ORDERER_ADMIN_TLS_PRIVATE_KEY
+export ORDERER_ADMIN_TLS_PRIVATE_KEY=${PWD}/organizations/ordererOrganizations/farmOrderer.ptracing.com/orderers/farmOrderer.ptracing.com/tls/server.key
+
+export ORDERER_ADDRESS=localhost:7063
+
+osnadmin channel join --channelID $CHANNEL_NAME --config-block ${PWD}/channel-artifacts/$CHANNEL_NAME.block -o $ORDERER_ADDRESS --ca-file $ORDERER_CA --client-cert $ORDERER_ADMIN_TLS_SIGN_CERT --client-key $ORDERER_ADMIN_TLS_PRIVATE_KEY
 sleep 2
-osnadmin channel list -o localhost:7053 --ca-file $ORDERER_CA --client-cert $ORDERER_ADMIN_TLS_SIGN_CERT --client-key $ORDERER_ADMIN_TLS_PRIVATE_KEY
+osnadmin channel list -o $ORDERER_ADDRESS --ca-file $ORDERER_CA --client-cert $ORDERER_ADMIN_TLS_SIGN_CERT --client-key $ORDERER_ADMIN_TLS_PRIVATE_KEY
+sleep 2
+
+echo "------ Join Processor Orderer to the channel------"
+
+export ORDERER_CA=${PWD}/organizations/ordererOrganizations/processorOrderer.ptracing.com/orderers/processorOrderer.ptracing.com/msp/tlscacerts/tlsca.processorOrderer.ptracing.com-cert.pem
+
+export ORDERER_ADMIN_TLS_SIGN_CERT=${PWD}/organizations/ordererOrganizations/processorOrderer.ptracing.com/orderers/processorOrderer.ptracing.com/tls/server.crt
+
+export ORDERER_ADMIN_TLS_PRIVATE_KEY=${PWD}/organizations/ordererOrganizations/processorOrderer.ptracing.com/orderers/processorOrderer.ptracing.com/tls/server.key
+
+export ORDERER_ADDRESS=localhost:7073
+
+osnadmin channel join --channelID $CHANNEL_NAME --config-block ${PWD}/channel-artifacts/$CHANNEL_NAME.block -o $ORDERER_ADDRESS --ca-file $ORDERER_CA --client-cert $ORDERER_ADMIN_TLS_SIGN_CERT --client-key $ORDERER_ADMIN_TLS_PRIVATE_KEY
+sleep 2
+osnadmin channel list -o $ORDERER_ADDRESS --ca-file $ORDERER_CA --client-cert $ORDERER_ADMIN_TLS_SIGN_CERT --client-key $ORDERER_ADMIN_TLS_PRIVATE_KEY
+sleep 2
+
+echo "------ Join Regulatory Department Orderer to the channel------"
+
+export ORDERER_CA=${PWD}/organizations/ordererOrganizations/regulatoryDepartmentOrderer.ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/msp/tlscacerts/tlsca.regulatoryDepartmentOrderer.ptracing.com-cert.pem
+
+export ORDERER_ADMIN_TLS_SIGN_CERT=${PWD}/organizations/ordererOrganizations/regulatoryDepartmentOrderer.ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/tls/server.crt
+
+export ORDERER_ADMIN_TLS_PRIVATE_KEY=${PWD}/organizations/ordererOrganizations/regulatoryDepartmentOrderer.ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/tls/server.key
+
+export ORDERER_ADDRESS=localhost:7053
+
+osnadmin channel join --channelID $CHANNEL_NAME --config-block ${PWD}/channel-artifacts/$CHANNEL_NAME.block -o $ORDERER_ADDRESS --ca-file $ORDERER_CA --client-cert $ORDERER_ADMIN_TLS_SIGN_CERT --client-key $ORDERER_ADMIN_TLS_PRIVATE_KEY
+sleep 2
+osnadmin channel list -o $ORDERER_ADDRESS --ca-file $ORDERER_CA --client-cert $ORDERER_ADMIN_TLS_SIGN_CERT --client-key $ORDERER_ADMIN_TLS_PRIVATE_KEY
 sleep 2
 
 export FABRIC_CFG_PATH=${PWD}/peercfg

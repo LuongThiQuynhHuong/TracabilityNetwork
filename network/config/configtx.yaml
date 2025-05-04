@@ -2,7 +2,7 @@ Organizations:
   - &RegulatoryDepartmentOrderer
     Name: RegulatoryDepartmentOrderer
     ID: RegulatoryDepartmentOrdererMSP
-    MSPDir: ../organizations/ordererOrganizations/ptracing.com/msp
+    MSPDir: ../organizations/ordererOrganizations/regulatoryDepartmentOrderer.ptracing.com/msp
     Policies:
       Readers:
         Type: Signature
@@ -15,6 +15,40 @@ Organizations:
         Rule: "OR('RegulatoryDepartmentOrdererMSP.admin')"
     OrdererEndpoints:
       - regulatoryDepartmentOrderer.ptracing.com:7050
+
+  - &FarmOrderer
+    Name: FarmOrderer
+    ID: FarmOrdererMSP
+    MSPDir: ../organizations/ordererOrganizations/farmOrderer.ptracing.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('FarmOrdererMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('FarmOrdererMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('FarmOrdererMSP.admin')"
+    OrdererEndpoints:
+      - farmOrderer.ptracing.com:7060
+
+  - &ProcessorOrderer
+    Name: ProcessorOrderer
+    ID: ProcessorOrdererMSP
+    MSPDir: ../organizations/ordererOrganizations/processorOrderer.ptracing.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('ProcessorOrdererMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('ProcessorOrdererMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('ProcessorOrdererMSP.admin')"
+    OrdererEndpoints:
+      - processorOrderer.ptracing.com:7070
 
   - &regulatoryDepartment
     Name: regulatoryDepartmentMSP
@@ -183,10 +217,20 @@ Profiles:
         Consenters:
           - Host: regulatoryDepartmentOrderer.ptracing.com
             Port: 7050
-            ClientTLSCert: ../organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/tls/server.crt
-            ServerTLSCert: ../organizations/ordererOrganizations/ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/tls/server.crt
+            ClientTLSCert: ../organizations/ordererOrganizations/regulatoryDepartmentOrderer.ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/tls/server.crt
+            ServerTLSCert: ../organizations/ordererOrganizations/regulatoryDepartmentOrderer.ptracing.com/orderers/regulatoryDepartmentOrderer.ptracing.com/tls/server.crt
+          - Host: farmOrderer.ptracing.com
+            Port: 7060
+            ClientTLSCert: ../organizations/ordererOrganizations/farmOrderer.ptracing.com/orderers/farmOrderer.ptracing.com/tls/server.crt
+            ServerTLSCert: ../organizations/ordererOrganizations/farmOrderer.ptracing.com/orderers/farmOrderer.ptracing.com/tls/server.crt
+          - Host: processorOrderer.ptracing.com
+            Port: 7070
+            ClientTLSCert: ../organizations/ordererOrganizations/processorOrderer.ptracing.com/orderers/processorOrderer.ptracing.com/tls/server.crt
+            ServerTLSCert: ../organizations/ordererOrganizations/processorOrderer.ptracing.com/orderers/processorOrderer.ptracing.com/tls/server.crt
       Organizations:
         - *RegulatoryDepartmentOrderer
+        - *FarmOrderer
+        - *ProcessorOrderer
       Capabilities: *OrdererCapabilities
     Application:
       <<: *ApplicationDefaults
