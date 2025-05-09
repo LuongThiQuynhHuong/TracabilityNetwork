@@ -49,7 +49,7 @@ const AddShipmentBody: React.FC<AppBodyProps> = ({ organization }) => {
       UpdateToastStatus(ToastStatus.Success, setToastBodyText, setToastStatus);
     } catch (err) {
       console.error(err);
-      UpdateToastStatus(ToastStatus.Error, setToastBodyText, setToastStatus, 'Error: ' + err);
+      UpdateToastStatus(ToastStatus.Error, setToastBodyText, setToastStatus, "Cannot add shipment");
     }
   };
 
