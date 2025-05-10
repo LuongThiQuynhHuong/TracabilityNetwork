@@ -54,8 +54,8 @@ async function makeApiRequest(endpoint: string, request: Partial<RequestModel>, 
   }
   
 export async function addNewOrgController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {
-    const { organization } = request;
-    return makeApiRequest(ADD_NEW_ORG_ENDPOINT, { organization }, isUseExternalServerUrl);
+    const { organization, orgKey, name } = request;
+    return makeApiRequest(ADD_NEW_ORG_ENDPOINT, { organization, orgKey, name }, isUseExternalServerUrl);
   }
   
 export async function registerOrgRoleController(request: Partial<RequestModel>, isUseExternalServerUrl: boolean = false): Promise<ResponseModel> {

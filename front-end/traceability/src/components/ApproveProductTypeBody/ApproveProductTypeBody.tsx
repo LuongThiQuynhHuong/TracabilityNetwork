@@ -34,7 +34,7 @@ const ApproveProductTypeBody: React.FC<AppBodyProps> = ({ organization }) => {
 
       console.log('API response:', response.data);
       setToastStatus(ToastStatus.Success);
-      UpdateToastStatus(ToastStatus.Success, setToastBodyText, setToastStatus);
+      UpdateToastStatus(ToastStatus.Success, setToastBodyText, setToastStatus, 'Product type is approved successfully');
     } catch (err) {
       console.error(err);
       UpdateToastStatus(ToastStatus.Error, setToastBodyText, setToastStatus, "Cannot approve product type");

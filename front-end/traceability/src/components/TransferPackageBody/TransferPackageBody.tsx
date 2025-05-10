@@ -35,7 +35,7 @@ const TransferPackageBody: React.FC<AppBodyProps> = ({ organization }) => {
 
       console.log('API response:', response.data);
       setToastStatus(ToastStatus.Success);
-      UpdateToastStatus(ToastStatus.Success, setToastBodyText, setToastStatus);
+      UpdateToastStatus(ToastStatus.Success, setToastBodyText, setToastStatus, "Package is transfered successfully");
     } catch (err) {
       console.error(err);
       UpdateToastStatus(ToastStatus.Error, setToastBodyText, setToastStatus, "Cannot transfer package");

@@ -35,7 +35,7 @@ const TransferFarmProductBody: React.FC<AppBodyProps> = ({ organization }) => {
 
       console.log('API response:', response.data);
       setToastStatus(ToastStatus.Success);
-      UpdateToastStatus(ToastStatus.Success, setToastBodyText, setToastStatus);
+      UpdateToastStatus(ToastStatus.Success, setToastBodyText, setToastStatus, "Farm product is transferred successfully");
     } catch (err) {
       console.error(err);
       UpdateToastStatus(ToastStatus.Error, setToastBodyText, setToastStatus, "Cannot transfer farm product");

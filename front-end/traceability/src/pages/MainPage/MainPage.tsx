@@ -1,4 +1,5 @@
 import AddFarmProductBody from '@components/AddFarmProductBody/AddFarmProductBody';
+import AddNewOrgBody from '@components/AddNewOrgBody/AddNewOrgBody';
 import AddPackageBody from '@components/AddPackageBody/AddPackageBody';
 import AddShipmentBody from '@components/AddShipmentBody/AddShipmentBody';
 import ApproveProductTypeBody from '@components/ApproveProductTypeBody/ApproveProductTypeBody';
@@ -13,7 +14,7 @@ import TransferPackageBody from '@components/TransferPackageBody/TransferPackage
 import UpdateFarmProductStatusBody from '@components/UpdateFarmProductStatusBody/UpdateFarmProductStatusBody';
 import UpdatePackageStatusBody from '@components/UpdatePackageStatusBody/UpdatePackageStatusBody';
 import WelcomeScreen from '@components/WelcomeScreen/WelcomeScreen';
-import { OrganizationKey, ADD_FARM_PRODUCT, ADD_PACKAGE, ADD_SHIPMENT, APPROVE_PRODUCT_TYPE, END_SHIPMENT, REGISTER_ORG_ROLE, REGISTER_PRODUCT_TYPE, START_SHIPMENT, TRANSFER_FARM_PRODUCT, TRANSFER_PACKAGE, UPDATE_FARM_PRODUCT_STATUS, UPDATE_PACKAGE_STATUS, GENERATE_TRACING_QR_CODE } from '@utils/AppConstant';
+import { OrganizationKey, ADD_FARM_PRODUCT, ADD_PACKAGE, ADD_SHIPMENT, APPROVE_PRODUCT_TYPE, END_SHIPMENT, REGISTER_ORG_ROLE, REGISTER_PRODUCT_TYPE, START_SHIPMENT, TRANSFER_FARM_PRODUCT, TRANSFER_PACKAGE, UPDATE_FARM_PRODUCT_STATUS, UPDATE_PACKAGE_STATUS, GENERATE_TRACING_QR_CODE, ADD_NEW_ORG } from '@utils/AppConstant';
 import { useState } from 'react'
 
 const MainPage = () => {
@@ -54,6 +55,8 @@ const MainPage = () => {
         return <UpdatePackageStatusBody organization={organization} />;
       case GENERATE_TRACING_QR_CODE:
         return <TracingCodeGenerationBody organization={organization} />;
+      case ADD_NEW_ORG:
+        return <AddNewOrgBody organization={organization} />;
       default:
         return <WelcomeScreen />;
     }

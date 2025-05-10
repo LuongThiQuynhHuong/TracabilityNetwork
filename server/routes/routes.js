@@ -46,9 +46,9 @@ router.post(constants.API_ENDPOINT.INITIALIZE_SYSTEM, async (req, res) => {
 //AddNewOrganization
 router.post(constants.API_ENDPOINT.ADD_NEW_ORG, async (req, res) => {
   try {
-    const { organization } = req.body;
+    const { organization, orgKey, name } = req.body;
 
-    if (!organization) {
+    if (!organization || !orgKey || !name) {
       return res
         .status(400)
         .json({ success: false, message: "All fields are required." });
@@ -63,7 +63,8 @@ router.post(constants.API_ENDPOINT.ADD_NEW_ORG, async (req, res) => {
       constants.HLF_CONSTANTS.CONTRACT_NAME,
       constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
       constants.HLF_TRANSACTION_NAME.ADD_NEW_ORG,
-      organization
+      orgKey,
+      name
     );
 
     res
@@ -106,7 +107,6 @@ router.post(constants.API_ENDPOINT.REGISTER_ORG_ROLE, async (req, res) => {
       constants.HLF_CONSTANTS.CONTRACT_NAME,
       constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
       constants.HLF_TRANSACTION_NAME.REGISTER_ORG_ROLE,
-      organization,
       role,
       orgKey
     );
@@ -151,7 +151,6 @@ router.post(constants.API_ENDPOINT.ADD_FARM_PRODUCT, async (req, res) => {
       constants.HLF_CONSTANTS.CONTRACT_NAME,
       constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
       constants.HLF_TRANSACTION_NAME.ADD_FARM_PRODUCT,
-      organization,
       farmProductKey,
       name
     );
@@ -196,7 +195,6 @@ router.post(constants.API_ENDPOINT.UPDATE_FARM_PRODUCT_STATUS, async (req, res) 
       constants.HLF_CONSTANTS.CONTRACT_NAME,
       constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
       constants.HLF_TRANSACTION_NAME.UPDATE_FARM_PRODUCT_STATUS,
-      organization,
       farmProductKey,
       newStatus
     );
@@ -240,7 +238,6 @@ router.post(constants.API_ENDPOINT.TRANSFER_FARM_PRODUCT, async (req, res) => {
       constants.HLF_CONSTANTS.CONTRACT_NAME,
       constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
       constants.HLF_TRANSACTION_NAME.TRANSFER_FARM_PRODUCT,
-      organization,
       farmProductKey,
       newOrgKey
     );
@@ -285,7 +282,6 @@ router.post(constants.API_ENDPOINT.REGISTER_PRODUCT_TYPE, async (req, res) => {
       constants.HLF_CONSTANTS.CONTRACT_NAME,
       constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
       constants.HLF_TRANSACTION_NAME.REGISTER_PRODUCT_TYPE,
-      organization,
       name
     );
 
@@ -329,7 +325,6 @@ router.post(constants.API_ENDPOINT.APPROVE_PRODUCT_TYPE, async (req, res) => {
       constants.HLF_CONSTANTS.CONTRACT_NAME,
       constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
       constants.HLF_TRANSACTION_NAME.APPROVE_PRODUCT_TYPE,
-      organization,
       productTypeKey,
       isApproved.toString()
     );
@@ -374,7 +369,6 @@ router.post(constants.API_ENDPOINT.ADD_PACKAGE, async (req, res) => {
       constants.HLF_CONSTANTS.CONTRACT_NAME,
       constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
       constants.HLF_TRANSACTION_NAME.ADD_PACKAGE,
-      organization,
       rawProductKey,
       productTypeKey,
       packageKey,
@@ -422,7 +416,6 @@ router.post(constants.API_ENDPOINT.ADD_SHIPMENT, async (req, res) => {
       constants.HLF_CONSTANTS.CONTRACT_NAME,
       constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
       constants.HLF_TRANSACTION_NAME.ADD_SHIPMENT,
-      organization,
       shipmentKey,
       fromAddress,
       destinationAddress,
@@ -471,7 +464,6 @@ router.post(constants.API_ENDPOINT.START_SHIPMENT, async (req, res) => {
       constants.HLF_CONSTANTS.CONTRACT_NAME,
       constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
       constants.HLF_TRANSACTION_NAME.START_SHIPMENT,
-      organization,
       shipmentKey,
       packageKey
     );
@@ -516,7 +508,6 @@ router.post(constants.API_ENDPOINT.TRANSFER_PACKAGE, async (req, res) => {
       constants.HLF_CONSTANTS.CONTRACT_NAME,
       constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
       constants.HLF_TRANSACTION_NAME.TRANSFER_PACKAGE,
-      organization,
       packageKey,
       newOrgKey
     );
@@ -561,7 +552,6 @@ router.post(constants.API_ENDPOINT.END_SHIPMENT, async (req, res) => {
       constants.HLF_CONSTANTS.CONTRACT_NAME,
       constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
       constants.HLF_TRANSACTION_NAME.END_SHIPMENT,
-      organization,
       shipmentKey
     );
 
@@ -605,7 +595,6 @@ router.post(constants.API_ENDPOINT.UPDATE_PACKAGE_STATUS, async (req, res) => {
       constants.HLF_CONSTANTS.CONTRACT_NAME,
       constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
       constants.HLF_TRANSACTION_NAME.UPDATE_PACKAGE_STATUS,
-      organization,
       packageKey,
       status
     );

@@ -9,13 +9,17 @@ export interface Package {
     id: string;
     rawProductId: string;
     productTypeId: string;
+    productTypeName: string;
     status: string;
     packagedDateTime: string;
     weight: number;
     lastShipmentId: string;
     processorOrgId: string;
+    processorName: string;
     currentOwnerOrgId: string;
+    currentOwnerName: string;
     submitterMSPID: string;
+    submitterName: string;
     invokedFunction: string;
   }
   
@@ -25,8 +29,11 @@ export interface Package {
     name: string;
     status: string;
     farmOrgId: string;
+    farmName: string;
     currentOwnerOrgId: string;
+    currentOwnerName: string;
     submitterMSPID: string;
+    submitterName: string;
     invokedFunction: string;
   }
   

@@ -1,6 +1,6 @@
 import { Badge, Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import "./styles.scss";
-import { OrganizationKey, REGISTER_ORG_ROLE, APPROVE_PRODUCT_TYPE, GENERATE_TRACING_QR_CODE, ADD_FARM_PRODUCT, ADD_FARM_PRODUCT_TITLE, UPDATE_FARM_PRODUCT_STATUS, TRANSFER_FARM_PRODUCT, UPDATE_PACKAGE_STATUS, REGISTER_PRODUCT_TYPE, ADD_PACKAGE, TRANSFER_PACKAGE, ADD_SHIPMENT, START_SHIPMENT, END_SHIPMENT, ADD_PACKAGE_TITLE, ADD_SHIPMENT_TITLE, APPROVE_PRODUCT_TYPE_TITLE, END_SHIPMENT_TITLE, GENERATE_TRACING_QR_CODE_TITLE, REGISTER_ORG_ROLE_TITLE, REGISTER_PRODUCT_TYPE_TITLE, START_SHIPMENT_TITLE, TRANSFER_FARM_PRODUCT_TITLE, TRANSFER_PACKAGE_TITLE, UPDATE_FARM_PRODUCT_STATUS_TITLE, UPDATE_PACKAGE_STATUS_TITLE } from '@utils/AppConstant';
+import { OrganizationKey, REGISTER_ORG_ROLE, APPROVE_PRODUCT_TYPE, GENERATE_TRACING_QR_CODE, ADD_FARM_PRODUCT, ADD_FARM_PRODUCT_TITLE, UPDATE_FARM_PRODUCT_STATUS, TRANSFER_FARM_PRODUCT, UPDATE_PACKAGE_STATUS, REGISTER_PRODUCT_TYPE, ADD_PACKAGE, TRANSFER_PACKAGE, ADD_SHIPMENT, START_SHIPMENT, END_SHIPMENT, ADD_PACKAGE_TITLE, ADD_SHIPMENT_TITLE, APPROVE_PRODUCT_TYPE_TITLE, END_SHIPMENT_TITLE, GENERATE_TRACING_QR_CODE_TITLE, REGISTER_ORG_ROLE_TITLE, REGISTER_PRODUCT_TYPE_TITLE, START_SHIPMENT_TITLE, TRANSFER_FARM_PRODUCT_TITLE, TRANSFER_PACKAGE_TITLE, UPDATE_FARM_PRODUCT_STATUS_TITLE, UPDATE_PACKAGE_STATUS_TITLE, ADD_NEW_ORG, ADD_NEW_ORG_TITLE } from '@utils/AppConstant';
 
 const Header = ({ onMenuClick }: { onMenuClick: (body: string, organization: OrganizationKey) => void }) => {
   return (
@@ -21,6 +21,7 @@ const Header = ({ onMenuClick }: { onMenuClick: (body: string, organization: Org
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
               <NavDropdown title="Regulatory Department" id="basic-nav-dropdown" align="end">
+              <NavDropdown.Item onClick={() => onMenuClick(ADD_NEW_ORG, OrganizationKey.RegulatoryDepartment)}>{ADD_NEW_ORG_TITLE}</NavDropdown.Item>
                 <NavDropdown.Item onClick={() => onMenuClick(REGISTER_ORG_ROLE, OrganizationKey.RegulatoryDepartment)}>{REGISTER_ORG_ROLE_TITLE}</NavDropdown.Item>
                 <NavDropdown.Item onClick={() => onMenuClick(APPROVE_PRODUCT_TYPE, OrganizationKey.RegulatoryDepartment)}>{APPROVE_PRODUCT_TYPE_TITLE}</NavDropdown.Item>
                 <NavDropdown.Item onClick={() => onMenuClick(GENERATE_TRACING_QR_CODE, OrganizationKey.RegulatoryDepartment)}>{GENERATE_TRACING_QR_CODE_TITLE}</NavDropdown.Item>
@@ -30,7 +31,6 @@ const Header = ({ onMenuClick }: { onMenuClick: (body: string, organization: Org
                 <NavDropdown.Item onClick={() => onMenuClick(ADD_FARM_PRODUCT, OrganizationKey.Farm)}>{ADD_FARM_PRODUCT_TITLE}</NavDropdown.Item>
                 <NavDropdown.Item onClick={() => onMenuClick(UPDATE_FARM_PRODUCT_STATUS, OrganizationKey.Farm)}>{UPDATE_FARM_PRODUCT_STATUS_TITLE}</NavDropdown.Item>
                 <NavDropdown.Item onClick={() => onMenuClick(TRANSFER_FARM_PRODUCT, OrganizationKey.Farm)}>{TRANSFER_FARM_PRODUCT_TITLE}</NavDropdown.Item>
-                <NavDropdown.Item onClick={() => onMenuClick(UPDATE_PACKAGE_STATUS, OrganizationKey.Farm)}>{UPDATE_PACKAGE_STATUS_TITLE}</NavDropdown.Item>
                 <NavDropdown.Item onClick={() => onMenuClick(GENERATE_TRACING_QR_CODE, OrganizationKey.Farm)}>{GENERATE_TRACING_QR_CODE_TITLE}</NavDropdown.Item>
               </NavDropdown>
 

@@ -33,7 +33,7 @@ const EndShipmentBody: React.FC<AppBodyProps> = ({ organization }) => {
 
       console.log('API response:', response.data);
       setToastStatus(ToastStatus.Success);
-      UpdateToastStatus(ToastStatus.Success, setToastBodyText, setToastStatus);
+      UpdateToastStatus(ToastStatus.Success, setToastBodyText, setToastStatus, "Shipment is ended successfully");
     } catch (err) {
       console.error(err);
       UpdateToastStatus(ToastStatus.Error, setToastBodyText, setToastStatus, "Cannot end shipment");

@@ -35,7 +35,7 @@ const UpdateFarmProductStatusBody: React.FC<AppBodyProps> = ({ organization }) =
 
       console.log('API response:', response.data);
       setToastStatus(ToastStatus.Success);
-      UpdateToastStatus(ToastStatus.Success, setToastBodyText, setToastStatus);
+      UpdateToastStatus(ToastStatus.Success, setToastBodyText, setToastStatus, "Farm product status is updated successfully");
     } catch (err) {
       console.error(err);
       UpdateToastStatus(ToastStatus.Error, setToastBodyText, setToastStatus, "Cannot update farm product status");
