@@ -10,6 +10,7 @@ import { OnCloseCustomToast, UpdateToastStatus } from '@utils/UtilFunctions';
 const AddNewOrgBody: React.FC<AppBodyProps> = ({ organization }) => {
   const [orgMspId, setOrgMspId] = useState('');
   const [orgName, setOrgName] = useState('');
+  const [address, setAddress] = useState('');
   const [toastBodyText, setToastBodyText] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [toastStatus, setToastStatus] = useState<ToastStatus>(ToastStatus.None);
@@ -23,6 +24,7 @@ const AddNewOrgBody: React.FC<AppBodyProps> = ({ organization }) => {
       organization,
       orgKey: orgMspId,
       name: orgName,
+      address: address,
     };
 
     console.log('Form data:', payload);
@@ -72,6 +74,18 @@ const AddNewOrgBody: React.FC<AppBodyProps> = ({ organization }) => {
             placeholder="Enter Org Name"
             value={orgName}
             onChange={(e) => setOrgName(e.target.value)}
+            disabled={toastStatus === ToastStatus.Loading}
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="address">
+          <Form.Label>Address</Form.Label>
+          <Form.Control
+            required
+            type="text"
+            placeholder="Enter Address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
             disabled={toastStatus === ToastStatus.Loading}
           />
         </Form.Group>

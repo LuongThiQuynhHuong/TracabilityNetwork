@@ -3,13 +3,16 @@ import { Button, Container, Form } from 'react-bootstrap';
 import { addFarmProductController, RequestModel } from '@services/APIController';
 import FormHeader from '@components/FormHeader/FormHeader';
 import { AppBodyProps } from '@utils/BaseIntefaces';
-import { ToastStatus } from '@utils/AppConstant';
+import { ToastStatus, UnitsOfMeasure } from '@utils/AppConstant';
 import CustomToast from '@components/CustomToast/CustomToast';
 import { GenerateUniqueString, OnCloseCustomToast, UpdateToastStatus } from '@utils/UtilFunctions';
 
 const AddFarmProductBody: React.FC<AppBodyProps> = ({ organization }) => {
   const [farmProductName, setFarmProductName] = useState('');
   const [farmProductKey, setFarmProductKey] = useState('');
+  const [unitOfMeasure, setUnitOfMeasure] = useState<UnitsOfMeasure>(UnitsOfMeasure.Kilogram);
+  const [amount, setAmount] = useState('');
+
   const [toastBodyText, setToastBodyText] = useState('');
   const [showToast, setShowToast]     = useState(false);
   const [toastStatus, setToastStatus] = useState<ToastStatus>(ToastStatus.None);
@@ -27,6 +30,8 @@ const AddFarmProductBody: React.FC<AppBodyProps> = ({ organization }) => {
       organization : organization,
       farmProductKey : farmProductKey,
       name: farmProductName,
+      unitOfMeasure : unitOfMeasure,
+      amount : parseFloat(amount),
     };
 
     try {
@@ -61,6 +66,33 @@ const AddFarmProductBody: React.FC<AppBodyProps> = ({ organization }) => {
             placeholder="Enter farm product name"
             value={farmProductName}
             onChange={e => setFarmProductName(e.target.value)}
+            disabled={toastStatus === ToastStatus.Loading}
+          />
+        </Form.Group>
+                
+        <Form.Group className="mb-3" controlId="unitOfMeasure">
+          <Form.Label>Unit Of Measure</Form.Label>
+          <Form.Select
+            value={unitOfMeasure}
+            onChange={(e) => setUnitOfMeasure(e.target.value as UnitsOfMeasure)}
+            disabled={toastStatus === ToastStatus.Loading}
+          >
+            <option value={UnitsOfMeasure.Gram}>Gram</option>
+            <option value={UnitsOfMeasure.Kilogram}>Kilogram</option>
+            <option value={UnitsOfMeasure.Liter}>Liter</option>
+            <option value={UnitsOfMeasure.Milliliter}>Milliliter</option>
+            <option value={UnitsOfMeasure.Piece}>Piece</option>
+          </Form.Select>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="amount">
+          <Form.Label>Amount</Form.Label>
+          <Form.Control
+            required={true}
+            type="number"
+            placeholder="Enter amount"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
             disabled={toastStatus === ToastStatus.Loading}
           />
         </Form.Group>

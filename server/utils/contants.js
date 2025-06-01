@@ -25,6 +25,7 @@ const HLF_TRANSACTION_NAME = {
   UPDATE_PACKAGE_STATUS : "UpdatePackageStatus",
   TRACE_PROVENANCE : "TraceProvenance",
   INITIALIZE_SYSTEM : "InitializeSystem",
+  LINK_PACKAGE_WITH_SHIPMENT : "LinkPackageWithShipment"
 };
 
 const API_ENDPOINT = {
@@ -43,6 +44,7 @@ const API_ENDPOINT = {
   UPDATE_PACKAGE_STATUS : "/updatePackageStatus",
   TRACE_PROVENANCE : "/traceProvenance",
   INITIALIZE_SYSTEM : "/initializeSystem",
+  LINK_PACKAGE_WITH_SHIPMENT : "/linkPackageWithShipment",
 };
 
 module.exports = {

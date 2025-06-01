@@ -7,6 +7,7 @@ export const END_SHIPMENT = "END_SHIPMENT";
 export const REGISTER_ORG_ROLE = "REGISTER_ORG_ROLE";
 export const ADD_NEW_ORG = "ADD_NEW_ORG";
 export const REGISTER_PRODUCT_TYPE = "REGISTER_PRODUCT_TYPE";
+export const LINK_PACKAGE_WITH_SHIPMENT = "LINK_PACKAGE_WITH_SHIPMENT";
 export const START_SHIPMENT = "START_SHIPMENT";
 export const TRANSFER_FARM_PRODUCT = "TRANSFER_FARM_PRODUCT";
 export const TRANSFER_PACKAGE = "TRANSFER_PACKAGE";
@@ -24,6 +25,7 @@ export const END_SHIPMENT_TITLE = "End Shipment";
 export const REGISTER_ORG_ROLE_TITLE = "Register Organization Role";
 export const REGISTER_PRODUCT_TYPE_TITLE = "Register Product Type";
 export const START_SHIPMENT_TITLE = "Start Shipment";
+export const LINK_PACKAGE_WITH_SHIPMENT_TITLE = "Link Package With Shipment";
 export const TRANSFER_FARM_PRODUCT_TITLE = "Transfer Farm Product";
 export const TRANSFER_PACKAGE_TITLE = "Transfer Package";
 export const UPDATE_FARM_PRODUCT_STATUS_TITLE = "Update Farm Product Status";
@@ -80,6 +82,7 @@ export const TRANSFER_PACKAGE_ENDPOINT = "/transferPackage";
 export const END_SHIPMENT_ENDPOINT = "/endShipment";
 export const UPDATE_PACKAGE_STATUS_ENDPOINT = "/updatePackageStatus";
 export const TRACE_PROVENANCE_ENDPOINT = "/traceProvenance";
+export const LINK_PACKAGE_WITH_SHIPMENT_ENDPOINT = "/linkPackageWithShipment";
 
 export enum ToastStatus {
     None    = 'none',
@@ -98,4 +101,12 @@ export enum PackageStatus {
     Packaged = "Packaged",
     Shipping = "Shipping",
     Distributed = "Distributed",
+}
+
+export enum UnitsOfMeasure{
+    Kilogram = "Kilogram",
+    Gram = "Gram",
+    Liter = "Liter",
+    Milliliter = "Milliliter",
+    Piece = "Piece",
 }

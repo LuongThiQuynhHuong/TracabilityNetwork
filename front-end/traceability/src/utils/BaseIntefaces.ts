@@ -10,9 +10,12 @@ export interface Package {
     rawProductId: string;
     productTypeId: string;
     productTypeName: string;
+    brand: string;
     status: string;
     packagedDateTime: string;
-    weight: number;
+    expiryDate: string;
+    unitOfMeasure: string;
+    amount: number;
     lastShipmentId: string;
     processorOrgId: string;
     processorName: string;
@@ -30,6 +33,8 @@ export interface Package {
     status: string;
     farmOrgId: string;
     farmName: string;
+    unitOfMeasure: string;
+    amount: number;
     currentOwnerOrgId: string;
     currentOwnerName: string;
     submitterMSPID: string;

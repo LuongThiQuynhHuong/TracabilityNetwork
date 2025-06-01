@@ -3,7 +3,7 @@ import { Button, Container, Form } from 'react-bootstrap';
 import { addPackageController, RequestModel } from '@services/APIController';
 import FormHeader from '@components/FormHeader/FormHeader';
 import { AppBodyProps } from '@utils/BaseIntefaces';
-import { ToastStatus } from '@utils/AppConstant';
+import { ToastStatus, UnitsOfMeasure } from '@utils/AppConstant';
 import CustomToast from '@components/CustomToast/CustomToast';
 import { GenerateUniqueString, GetServerValidDateTimeFormat, OnCloseCustomToast, UpdateToastStatus } from '@utils/UtilFunctions';
 
@@ -13,7 +13,9 @@ const AddPackageBody: React.FC<AppBodyProps> = ({ organization }) => {
   const [productTypeId, setProductTypeId] = useState('');
   const [packageKey, setPackageKey] = useState('');
   const [packagedTime, setPackagedTime] = useState('');
-  const [weight, setWeight] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
+  const [unitOfMeasure, setUnitOfMeasure] = useState<UnitsOfMeasure>(UnitsOfMeasure.Kilogram);
+  const [amount, setAmount] = useState('');
   
   const [toastBodyText, setToastBodyText] = useState('');
   const [showToast, setShowToast] = useState(false);
@@ -35,7 +37,9 @@ const AddPackageBody: React.FC<AppBodyProps> = ({ organization }) => {
       productTypeKey : productTypeId,
       packageKey : packageKey,
       packagedDateTime : GetServerValidDateTimeFormat(packagedTime),
-      weight : parseFloat(weight),
+      expiryDate : GetServerValidDateTimeFormat(expiryDate),
+      unitOfMeasure : unitOfMeasure,
+      amount : parseFloat(amount),
     };
 
     try {
@@ -98,14 +102,40 @@ const AddPackageBody: React.FC<AppBodyProps> = ({ organization }) => {
           />
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="weight">
-          <Form.Label>Weight</Form.Label>
+        <Form.Group className="mb-3" controlId="expiryDate">
+          <Form.Label>Expiry Date</Form.Label>
+          <Form.Control
+            required={true}
+            type="date"
+            value={expiryDate}
+            onChange={(e) => setExpiryDate(e.target.value)}
+            disabled={toastStatus === ToastStatus.Loading}
+          />
+        </Form.Group>
+        
+        <Form.Group className="mb-3" controlId="unitOfMeasure">
+          <Form.Label>Unit Of Measure</Form.Label>
+          <Form.Select
+            value={unitOfMeasure}
+            onChange={(e) => setUnitOfMeasure(e.target.value as UnitsOfMeasure)}
+            disabled={toastStatus === ToastStatus.Loading}
+          >
+            <option value={UnitsOfMeasure.Gram}>Gram</option>
+            <option value={UnitsOfMeasure.Kilogram}>Kilogram</option>
+            <option value={UnitsOfMeasure.Liter}>Liter</option>
+            <option value={UnitsOfMeasure.Milliliter}>Milliliter</option>
+            <option value={UnitsOfMeasure.Piece}>Piece</option>
+          </Form.Select>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="amount">
+          <Form.Label>Amount</Form.Label>
           <Form.Control
             required={true}
             type="number"
-            placeholder="Enter weight"
-            value={weight}
-            onChange={(e) => setWeight(e.target.value)}
+            placeholder="Enter amount"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
             disabled={toastStatus === ToastStatus.Loading}
           />
         </Form.Group>

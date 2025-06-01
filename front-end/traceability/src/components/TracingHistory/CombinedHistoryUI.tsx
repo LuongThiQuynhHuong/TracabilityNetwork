@@ -29,9 +29,12 @@ const CombinedHistoryUI: React.FC<CombinedHistoryUIProps> = ({ packageId, histor
                 <th>Package ID</th>
                 <th>Raw Product ID</th>
                 <th>Product Type</th>
+                <th>Brand</th>
                 <th>Status</th>
                 <th>Packaged Date</th>
-                <th>Weight</th>
+                <th>Expiry Date</th>
+                <th>Amount</th>
+                <th>Unit Of Measure</th>
                 <th>Last Shipment Id</th>
                 <th>Processor Org Name</th>
                 <th>Current Owner Org Name</th>
@@ -48,9 +51,12 @@ const CombinedHistoryUI: React.FC<CombinedHistoryUIProps> = ({ packageId, histor
                   <td>{ph.record.id}</td>
                   <td>{ph.record.rawProductId}</td>
                   <td>{ph.record.productTypeName}</td>
+                  <td>{ph.record.brand}</td>
                   <td>{ph.record.status}</td>
                   <td>{ph.record.packagedDateTime}</td>
-                  <td>{ph.record.weight}</td>
+                  <td>{ph.record.expiryDate}</td>
+                  <td>{ph.record.amount}</td>
+                  <td>{ph.record.unitOfMeasure}</td>
                   <td>{ph.record.lastShipmentId}</td>
                   <td>{ph.record.processorName}</td>
                   <td>{ph.record.currentOwnerName}</td>
@@ -76,6 +82,8 @@ const CombinedHistoryUI: React.FC<CombinedHistoryUIProps> = ({ packageId, histor
                 <th>Product ID</th>
                 <th>Product Name</th>
                 <th>Status</th>
+                <th>Amount</th>
+                <th>Unit Of Measure</th>
                 <th>Farm Org Name</th>
                 <th>Current Owner Org Name</th>
               </tr>
@@ -91,6 +99,8 @@ const CombinedHistoryUI: React.FC<CombinedHistoryUIProps> = ({ packageId, histor
                   <td>{rph.record.id}</td>
                   <td>{rph.record.name}</td>
                   <td>{rph.record.status}</td>
+                  <td>{rph.record.amount}</td>
+                  <td>{rph.record.unitOfMeasure}</td>
                   <td>{rph.record.farmName}</td>
                   <td>{rph.record.currentOwnerName}</td>
                 </tr>

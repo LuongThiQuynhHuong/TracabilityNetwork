@@ -166,6 +166,7 @@ type Organization struct {
 	DocType string `json:"docType"`
 	ID      string `json:"id"`
 	Name    string `json:"name"`
+	Address string `json:"address"`
 }
 
 type OrganizationRole struct {
@@ -176,23 +177,26 @@ type OrganizationRole struct {
 }
 
 type FarmProduct struct {
-	DocType           string `json:"docType"`
-	ID                string `json:"id"`
-	Name              string `json:"name"`
-	Status            string `json:"status"`
-	FarmOrgID         string `json:"farmOrgId"`
-	FarmName          string `json:"farmName"`
-	CurrentOwnerOrgID string `json:"currentOwnerOrgId"`
-	CurrentOwnerName  string `json:"currentOwnerName"`
-	SubmitterMSPID    string `json:"submitterMSPID"`
-	SubmitterName     string `json:"submitterName"`
-	InvokedFunction   string `json:"invokedFunction"`
+	DocType           string  `json:"docType"`
+	ID                string  `json:"id"`
+	Name              string  `json:"name"`
+	Status            string  `json:"status"`
+	FarmOrgID         string  `json:"farmOrgId"`
+	FarmName          string  `json:"farmName"`
+	UnitOfMeasure     string  `json:"unitOfMeasure"`
+	Amount            float64 `json:"amount"`
+	CurrentOwnerOrgID string  `json:"currentOwnerOrgId"`
+	CurrentOwnerName  string  `json:"currentOwnerName"`
+	SubmitterMSPID    string  `json:"submitterMSPID"`
+	SubmitterName     string  `json:"submitterName"`
+	InvokedFunction   string  `json:"invokedFunction"`
 }
 
 type ProductType struct {
 	DocType       string `json:"docType"`
 	ID            string `json:"id"`
 	Name          string `json:"name"`
+	Brand         string `json:"brand"`
 	Status        string `json:"status"`
 	RegisterOrgID string `json:"registerOrgId"`
 	ApprovedOrgID string `json:"approvedOrgId"`
@@ -205,9 +209,12 @@ type Package struct {
 	RawProductID      string  `json:"rawProductId"`
 	ProductTypeID     string  `json:"productTypeId"`
 	ProductTypeName   string  `json:"productTypeName"`
+	Brand             string  `json:"brand"`
 	Status            string  `json:"status"`
 	PackagedDateTime  string  `json:"packagedDateTime"`
-	Weight            float64 `json:"weight"`
+	ExpiryDate        string  `json:"expiryDate"`
+	UnitOfMeasure     string  `json:"unitOfMeasure"`
+	Amount            float64 `json:"amount"`
 	LastShipmentID    string  `json:"lastShipmentId"`
 	ProcessorOrgID    string  `json:"processorOrgId"`
 	ProcessorName     string  `json:"processorName"`
@@ -452,10 +459,10 @@ func (s *SmartContract) GetFarmProductHistory(ctx contractapi.TransactionContext
 	return records, nil
 }
 
-func (s *SmartContract) InitializeOrganizationAndRole(ctx contractapi.TransactionContextInterface, orgKey, orgName string, role OrgRoleType) error {
+func (s *SmartContract) InitializeOrganizationAndRole(ctx contractapi.TransactionContextInterface, orgKey, orgName, address string, role OrgRoleType) error {
 	standardOrgKey := GetKey(Organization{}, orgKey)
 
-	err := s.AddNewOrganization(ctx, standardOrgKey, orgName)
+	err := s.AddNewOrganization(ctx, standardOrgKey, orgName, address)
 	if err != nil {
 		return err
 	}
@@ -496,7 +503,7 @@ func (s *SmartContract) AssetExists(ctx contractapi.TransactionContextInterface,
 }
 
 // CALLED WHEN JOIN CHANNEL
-func (s *SmartContract) AddNewOrganization(ctx contractapi.TransactionContextInterface, orgKey, name string) error {
+func (s *SmartContract) AddNewOrganization(ctx contractapi.TransactionContextInterface, orgKey, name, address string) error {
 
 	orgKey = GetKey(Organization{}, orgKey)
 
@@ -514,6 +521,7 @@ func (s *SmartContract) AddNewOrganization(ctx contractapi.TransactionContextInt
 		DocType: ORGANIZATION_DOCTYPE,
 		ID:      orgKey,
 		Name:    name,
+		Address: address,
 	}
 
 	// Marshal new organization into JSON format
@@ -605,7 +613,7 @@ func (s *SmartContract) RegisterOrgRole(ctx contractapi.TransactionContextInterf
 	return nil
 }
 
-func (s *SmartContract) AddFarmProduct(ctx contractapi.TransactionContextInterface, farmProductKey, name string) error {
+func (s *SmartContract) AddFarmProduct(ctx contractapi.TransactionContextInterface, farmProductKey, name, unitOfMeasure string, amount float64) error {
 	// Get submitter MSP ID
 	requestingOrg, err := ctx.GetClientIdentity().GetMSPID()
 	if err != nil {
@@ -631,6 +639,8 @@ func (s *SmartContract) AddFarmProduct(ctx contractapi.TransactionContextInterfa
 		DocType:           FARM_PRODUCT_DOCTYPE,
 		ID:                GetKey(FarmProduct{}, farmProductKey),
 		Name:              name,
+		UnitOfMeasure:     unitOfMeasure,
+		Amount:            amount,
 		Status:            Growing.String(),
 		FarmOrgID:         requestingOrgKey,
 		FarmName:          org.Name,
@@ -762,7 +772,7 @@ func (s *SmartContract) TransferFarmProduct(ctx contractapi.TransactionContextIn
 	return nil
 }
 
-func (s *SmartContract) RegisterProductType(ctx contractapi.TransactionContextInterface, name string) error {
+func (s *SmartContract) RegisterProductType(ctx contractapi.TransactionContextInterface, name, brand string) error {
 	// Get submitter MSP ID
 	requestingOrg, err := ctx.GetClientIdentity().GetMSPID()
 	if err != nil {
@@ -795,6 +805,7 @@ func (s *SmartContract) RegisterProductType(ctx contractapi.TransactionContextIn
 		DocType:       PRODUCT_TYPE_DOCTYPE,
 		ID:            productTypeKey,
 		Name:          name,
+		Brand:         brand,
 		Status:        Requesting.String(),
 		RegisterOrgID: requestingOrgKey,
 		ApprovedOrgID: "",
@@ -856,8 +867,12 @@ func (s *SmartContract) ApproveProductType(ctx contractapi.TransactionContextInt
 	return nil
 }
 
-func (s *SmartContract) AddPackage(ctx contractapi.TransactionContextInterface, rawProductKey, productTypeKey, packageKey, packagedDateTime string, weight float64) error {
+func (s *SmartContract) AddPackage(ctx contractapi.TransactionContextInterface, rawProductKey, productTypeKey, packageKey, packagedDateTime, expiryDate, unitOfMeasure string, amount float64) error {
 	_, err := ValidateDateTime(packagedDateTime)
+	if err != nil {
+		return err
+	}
+	_, err = ValidateDateTime(expiryDate)
 	if err != nil {
 		return err
 	}
@@ -905,9 +920,12 @@ func (s *SmartContract) AddPackage(ctx contractapi.TransactionContextInterface, 
 		RawProductID:      rawProductKey,
 		ProductTypeID:     productTypeKey,
 		ProductTypeName:   productType.Name,
+		Brand:             productType.Brand,
 		Status:            Packaged.String(),
 		PackagedDateTime:  packagedDateTime,
-		Weight:            weight,
+		ExpiryDate:        expiryDate,
+		UnitOfMeasure:     unitOfMeasure,
+		Amount:            amount,
 		LastShipmentID:    "",
 		ProcessorOrgID:    requestingOrgKey,
 		ProcessorName:     org.Name,
@@ -995,8 +1013,58 @@ func (s *SmartContract) AddShipment(ctx contractapi.TransactionContextInterface,
 	return nil
 }
 
-// change UpdatePackageOnShipment -> StartShipment
-func (s *SmartContract) StartShipment(ctx contractapi.TransactionContextInterface, shipmentKey, packageKey string) error {
+func (s *SmartContract) LinkPackageWithShipment(ctx contractapi.TransactionContextInterface, shipmentKey, packageKey string) error {
+	// Get submitter MSP ID
+	requestingOrg, err := ctx.GetClientIdentity().GetMSPID()
+	if err != nil {
+		return err
+	}
+	requestingOrgKey := GetKey(Organization{}, requestingOrg)
+
+	// check package
+	packageKey = GetKey(Package{}, packageKey)
+	updatedPackage, err := ReadAsset[Package](ctx, packageKey)
+	if err != nil {
+		return err
+	}
+	if updatedPackage.CurrentOwnerOrgID != requestingOrgKey {
+		return fmt.Errorf("package must be owned by you")
+	}
+
+	// check shipment
+	shipmentKey = GetKey(Shipment{}, shipmentKey)
+	shipment, err := ReadAsset[Shipment](ctx, shipmentKey)
+	if err != nil {
+		return err
+	}
+	if shipment.Status != Ready.String() {
+		return fmt.Errorf("shipment must be in Ready status")
+	}
+
+	submitter, err := ReadAsset[Organization](ctx, requestingOrgKey)
+	if err != nil {
+		return fmt.Errorf("there is no organization with the key %s", requestingOrgKey)
+	}
+
+	//Update pakage
+	updatedPackage.LastShipmentID = shipment.ID
+	updatedPackage.SubmitterMSPID = requestingOrg
+	updatedPackage.SubmitterName = submitter.Name
+	updatedPackage.InvokedFunction = "Link Package with Shipment"
+	updatedPackageBytes, err := json.Marshal(updatedPackage)
+	if err != nil {
+		return fmt.Errorf("failed to marshal the package: %v", err)
+	}
+	err = ctx.GetStub().PutState(updatedPackage.ID, updatedPackageBytes)
+	if err != nil {
+		return fmt.Errorf("failed to update package with ID %s: %v", updatedPackage.ID, err)
+	}
+
+	return nil
+}
+
+func (s *SmartContract) StartShipment(ctx contractapi.TransactionContextInterface, shipmentKey string) error {
+
 	// Get submitter MSP ID
 	requestingOrg, err := ctx.GetClientIdentity().GetMSPID()
 	if err != nil {
@@ -1013,42 +1081,63 @@ func (s *SmartContract) StartShipment(ctx contractapi.TransactionContextInterfac
 	if shipment.Status != Ready.String() {
 		return fmt.Errorf("shipment must be in Ready status")
 	}
-	// check package
-	packageKey = GetKey(Package{}, packageKey)
-	updatedPackage, err := ReadAsset[Package](ctx, packageKey)
-	if err != nil {
-		return err
-	}
-	if updatedPackage.CurrentOwnerOrgID != requestingOrgKey {
-		return fmt.Errorf("package must be owned by you")
-	}
 
 	submitter, err := ReadAsset[Organization](ctx, requestingOrgKey)
 	if err != nil {
 		return fmt.Errorf("there is no organization with the key %s", requestingOrgKey)
 	}
 
-	distributorOrg, err := ReadAsset[Organization](ctx, shipment.DistributorOrgID)
+	queryString := fmt.Sprintf(`{
+        "selector": {
+            "docType": "%s",
+            "lastShipmentId": "%s"
+        }
+    }`, PACKAGE_DOCTYPE, shipmentKey)
+
+	resultsIterator, err := ctx.GetStub().GetQueryResult(queryString)
 	if err != nil {
-		return fmt.Errorf("there is no organization with the key %s", shipment.DistributorOrgID)
+		return fmt.Errorf("failed to get query result: %v", err)
+	}
+	defer resultsIterator.Close()
+
+	// return error if there is no packages with the given LastShipmentID
+	if !resultsIterator.HasNext() {
+		return fmt.Errorf("no packages found with LastShipmentID: %s", shipmentKey)
 	}
 
-	//Update pakage
-	updatedPackage.Status = Shipping.String()
-	updatedPackage.LastShipmentID = shipment.ID
-	updatedPackage.CurrentOwnerOrgID = shipment.DistributorOrgID
-	updatedPackage.CurrentOwnerName = distributorOrg.Name
-	updatedPackage.SubmitterMSPID = requestingOrg
-	updatedPackage.SubmitterName = submitter.Name
-	updatedPackage.InvokedFunction = "Start the shipment"
-	updatedPackageBytes, err := json.Marshal(updatedPackage)
-	if err != nil {
-		return fmt.Errorf("failed to marshal the package: %v", err)
+	for resultsIterator.HasNext() {
+		queryResponse, err := resultsIterator.Next()
+		if err != nil {
+			return fmt.Errorf("failed to iterate query results: %v", err)
+		}
+
+		var updatedPackage Package
+		err = json.Unmarshal(queryResponse.Value, &updatedPackage)
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal package json: %v", err)
+		}
+
+		if updatedPackage.CurrentOwnerOrgID != requestingOrgKey {
+			return fmt.Errorf("package must be owned by you")
+		}
+
+		//Update pakage
+		updatedPackage.Status = Shipping.String()
+		updatedPackage.SubmitterMSPID = requestingOrg
+		updatedPackage.SubmitterName = submitter.Name
+		updatedPackage.InvokedFunction = "Start the shipment"
+
+		updatedPkgJSON, err := json.Marshal(updatedPackage)
+		if err != nil {
+			return fmt.Errorf("failed to marshal updated package json: %v", err)
+		}
+
+		err = ctx.GetStub().PutState(updatedPackage.ID, updatedPkgJSON)
+		if err != nil {
+			return fmt.Errorf("failed to put updated package state: %v", err)
+		}
 	}
-	err = ctx.GetStub().PutState(updatedPackage.ID, updatedPackageBytes)
-	if err != nil {
-		return fmt.Errorf("failed to update package with ID %s: %v", updatedPackage.ID, err)
-	}
+
 	//Update shipment
 	shipment.Status = InTransit.String()
 	shipmentBytes, err := json.Marshal(shipment)
@@ -1219,27 +1308,27 @@ func (s *SmartContract) TraceProvenance(ctx contractapi.TransactionContextInterf
 
 func (s *SmartContract) InitializeSystem(ctx contractapi.TransactionContextInterface) error {
 
-	err := s.InitializeOrganizationAndRole(ctx, "regulatoryDepartmentMSP", "Regulatory Department", RegulatoryDepartment)
+	err := s.InitializeOrganizationAndRole(ctx, "regulatoryDepartmentMSP", "Regulatory Department", "Viet Nam", RegulatoryDepartment)
 	if err != nil {
 		return err
 	}
 
-	// err = s.InitializeOrganizationAndRole(ctx, "farmMSP", "A farm", Farm)
+	// err = s.InitializeOrganizationAndRole(ctx, "farmMSP", "A farm", "A City", Farm)
 	// if err != nil {
 	// 	return err
 	// }
 
-	// err = s.InitializeOrganizationAndRole(ctx, "processorMSP", "A processor", Processor)
+	// err = s.InitializeOrganizationAndRole(ctx, "processorMSP", "A processor", "A City", Processor)
 	// if err != nil {
 	// 	return err
 	// }
 
-	// err = s.InitializeOrganizationAndRole(ctx, "distributorMSP", "A distributor", Distributor)
+	// err = s.InitializeOrganizationAndRole(ctx, "distributorMSP", "A distributor", "A City", Distributor)
 	// if err != nil {
 	// 	return err
 	// }
 
-	// err = s.InitializeOrganizationAndRole(ctx, "retailerMSP", "A retailer", Retailer)
+	// err = s.InitializeOrganizationAndRole(ctx, "retailerMSP", "A retailer", "A City", Retailer)
 	// if err != nil {
 	// 	return err
 	// }

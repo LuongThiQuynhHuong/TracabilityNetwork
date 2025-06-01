@@ -46,9 +46,9 @@ router.post(constants.API_ENDPOINT.INITIALIZE_SYSTEM, async (req, res) => {
 //AddNewOrganization
 router.post(constants.API_ENDPOINT.ADD_NEW_ORG, async (req, res) => {
   try {
-    const { organization, orgKey, name } = req.body;
+    const { organization, orgKey, name, address } = req.body;
 
-    if (!organization || !orgKey || !name) {
+    if (!organization || !orgKey || !name || !address) {
       return res
         .status(400)
         .json({ success: false, message: "All fields are required." });
@@ -64,7 +64,8 @@ router.post(constants.API_ENDPOINT.ADD_NEW_ORG, async (req, res) => {
       constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
       constants.HLF_TRANSACTION_NAME.ADD_NEW_ORG,
       orgKey,
-      name
+      name,
+      address
     );
 
     res
@@ -134,9 +135,9 @@ router.post(constants.API_ENDPOINT.REGISTER_ORG_ROLE, async (req, res) => {
 //AddFarmProduct
 router.post(constants.API_ENDPOINT.ADD_FARM_PRODUCT, async (req, res) => {
   try {
-    const { organization, farmProductKey, name } = req.body;
+    const { organization, farmProductKey, name, unitOfMeasure, amount } = req.body;
 
-    if (!organization || !farmProductKey || !name) {
+    if (!organization || !farmProductKey || !name || !unitOfMeasure || !amount) {
       return res
         .status(400)
         .json({ success: false, message: "All fields are required." });
@@ -152,7 +153,9 @@ router.post(constants.API_ENDPOINT.ADD_FARM_PRODUCT, async (req, res) => {
       constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
       constants.HLF_TRANSACTION_NAME.ADD_FARM_PRODUCT,
       farmProductKey,
-      name
+      name,
+      unitOfMeasure,
+      amount.toString()
     );
 
     res
@@ -265,9 +268,9 @@ router.post(constants.API_ENDPOINT.TRANSFER_FARM_PRODUCT, async (req, res) => {
 //RegisterProductType
 router.post(constants.API_ENDPOINT.REGISTER_PRODUCT_TYPE, async (req, res) => {
   try {
-    const { organization, name } = req.body;
+    const { organization, name, brand } = req.body;
 
-    if (!organization || !name) {
+    if (!organization || !name || !brand) {
       return res
         .status(400)
         .json({ success: false, message: "All fields are required." });
@@ -282,7 +285,8 @@ router.post(constants.API_ENDPOINT.REGISTER_PRODUCT_TYPE, async (req, res) => {
       constants.HLF_CONSTANTS.CONTRACT_NAME,
       constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
       constants.HLF_TRANSACTION_NAME.REGISTER_PRODUCT_TYPE,
-      name
+      name,
+      brand
     );
 
     res
@@ -352,9 +356,9 @@ router.post(constants.API_ENDPOINT.APPROVE_PRODUCT_TYPE, async (req, res) => {
 //AddPackage
 router.post(constants.API_ENDPOINT.ADD_PACKAGE, async (req, res) => {
   try {
-    const { organization, rawProductKey, productTypeKey, packageKey, packagedDateTime, weight } = req.body;
+    const { organization, rawProductKey, productTypeKey, packageKey, packagedDateTime, expiryDate, unitOfMeasure, amount } = req.body;
 
-    if (!organization || !rawProductKey || !productTypeKey || !packageKey || !packagedDateTime) {
+    if (!organization || !rawProductKey || !productTypeKey || !packageKey || !packagedDateTime || !expiryDate || !unitOfMeasure || !amount) {
       return res
         .status(400)
         .json({ success: false, message: "All fields are required." });
@@ -373,7 +377,9 @@ router.post(constants.API_ENDPOINT.ADD_PACKAGE, async (req, res) => {
       productTypeKey,
       packageKey,
       packagedDateTime,
-      weight.toString()
+      expiryDate,
+      unitOfMeasure,
+      amount.toString()
     );
 
     res
@@ -444,8 +450,8 @@ router.post(constants.API_ENDPOINT.ADD_SHIPMENT, async (req, res) => {
   }
 });
 
-//StartShipment
-router.post(constants.API_ENDPOINT.START_SHIPMENT, async (req, res) => {
+//LinkPackageWithShipment
+router.post(constants.API_ENDPOINT.LINK_PACKAGE_WITH_SHIPMENT, async (req, res) => {
   try {
     const { organization, shipmentKey, packageKey } = req.body;
 
@@ -463,9 +469,52 @@ router.post(constants.API_ENDPOINT.START_SHIPMENT, async (req, res) => {
       constants.HLF_CONSTANTS.CHAINCODE_NAME,
       constants.HLF_CONSTANTS.CONTRACT_NAME,
       constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
-      constants.HLF_TRANSACTION_NAME.START_SHIPMENT,
+      constants.HLF_TRANSACTION_NAME.LINK_PACKAGE_WITH_SHIPMENT,
       shipmentKey,
       packageKey
+    );
+
+    res
+      .status(201)
+      .json({
+        success: true,
+        message: "Package is linked successfully!",
+        data: { result },
+      });
+  } catch (error) {
+    console.error("Error linking package request:", error);
+
+    const errorMessage = formatGrpcErrorMessage(error, "Error linking package request!");
+
+    res.status(500).json({
+      success: false,
+      message: errorMessage,
+      data: { error: error.message },
+    });
+  }
+});
+
+//StartShipment
+router.post(constants.API_ENDPOINT.START_SHIPMENT, async (req, res) => {
+  try {
+    const { organization, shipmentKey } = req.body;
+
+    if (!organization || !shipmentKey) {
+      return res
+        .status(400)
+        .json({ success: false, message: "All fields are required." });
+    }
+
+    let orgClient = new clientApplication();
+
+    const result = await orgClient.submitTxn(
+      organization,
+      constants.HLF_CONSTANTS.CHANNEL_NAME,
+      constants.HLF_CONSTANTS.CHAINCODE_NAME,
+      constants.HLF_CONSTANTS.CONTRACT_NAME,
+      constants.HLF_TRANSACTION_TYPE.INVOKE_TXN,
+      constants.HLF_TRANSACTION_NAME.START_SHIPMENT,
+      shipmentKey
     );
 
     res

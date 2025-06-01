@@ -9,6 +9,7 @@ import { OnCloseCustomToast, UpdateToastStatus } from '@utils/UtilFunctions';
 
 const RegisterProductTypeBody: React.FC<AppBodyProps> = ({ organization }) => {
   const [productTypeName, setProductTypeName] = useState('');
+  const [brand, setBrand] = useState('');
   const [toastBodyText, setToastBodyText] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [toastStatus, setToastStatus] = useState<ToastStatus>(ToastStatus.None);
@@ -22,6 +23,7 @@ const RegisterProductTypeBody: React.FC<AppBodyProps> = ({ organization }) => {
     const request : RequestModel = {
       organization: organization,
       name : productTypeName,
+      brand: brand
     };
 
     console.log('Product Type Data:', request);
@@ -55,6 +57,18 @@ const RegisterProductTypeBody: React.FC<AppBodyProps> = ({ organization }) => {
             placeholder="Enter product type name"
             value={productTypeName}
             onChange={(e) => setProductTypeName(e.target.value)}
+            disabled={toastStatus === ToastStatus.Loading}
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="brand">
+          <Form.Label>Brand</Form.Label>
+          <Form.Control
+            required={true}
+            type="text"
+            placeholder="Enter brand name"
+            value={brand}
+            onChange={(e) => setBrand(e.target.value)}
             disabled={toastStatus === ToastStatus.Loading}
           />
         </Form.Group>
